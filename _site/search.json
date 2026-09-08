@@ -1,0 +1,385 @@
+[
+  {
+    "objectID": "discussion.html",
+    "href": "discussion.html",
+    "title": "Results and Discussion",
+    "section": "",
+    "text": "The Comparison chapter brings together train/test evidence for the selected XGBoostLSS and GCN–LSTM examples. Here validation assesses those fixed fits afterwards. It does not select an architecture, checkpoint, or replacement winner.\nA limited search and one fit per example do not establish a definitive class ranking. The response measures satellite-detected burned area, with the observation and coverage limitations described in the data chapter.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#assess-the-fixed-examples",
+    "href": "discussion.html#assess-the-fixed-examples",
+    "title": "Results and Discussion",
+    "section": "",
+    "text": "The Comparison chapter brings together train/test evidence for the selected XGBoostLSS and GCN–LSTM examples. Here validation assesses those fixed fits afterwards. It does not select an architecture, checkpoint, or replacement winner.\nA limited search and one fit per example do not establish a definitive class ranking. The response measures satellite-detected burned area, with the observation and coverage limitations described in the data chapter.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#sec-validation-diagnostics",
+    "href": "discussion.html#sec-validation-diagnostics",
+    "title": "Results and Discussion",
+    "section": "2 Validation scores and diagnostics",
+    "text": "2 Validation scores and diagnostics\nThe score definitions and residual construction are the same as in Comparison. NLL and CRPS describe saved plug-in hurdle distributions. They do not quantify parameter uncertainty or uncertainty in the neural model’s mean-feedback path.\n\nValidation assesses the two fixed forecast examples on matching forecast requests.\n\n\n\n\n\n\n\n\n\n\n\n\nSplit\nModel\nForecast requests\nNLL\nCRPS\nExpected-fraction MAE\nOccurrence Brier\n\n\n\n\nValidation\nXGBoostLSS\n1,566,432\n-0.233298\n0.0002068\n0.0003285\n0.055992\n\n\nValidation\nGCN → LSTM\n1,566,432\n-0.233627\n0.0002080\n0.0003357\n0.054928\n\n\n\nResidual summaries use the same randomized residuals as the plots. Undefined correlations are shown as an em dash.\n\n\n\n\n\n\n\n\n\n\n\nSplit\nModel\nResidual mean\nResidual SD\nCounty-mean Moran I\nMonthly lag-1 r\n\n\n\n\nValidation\nXGBoostLSS\n-0.001\n1.002\n0.137\n0.205\n\n\nValidation\nGCN → LSTM\n0.023\n1.027\n0.185\n0.202\n\n\n\n \nOn validation, the models’ NLLs are much closer than on test, and XGBoostLSS continues to have the lower CRPS. These are descriptive comparisons under different scoring rules, without a significance or winner claim.\nBoth models’ validation QQ curves bend above the reference line in the upper tail, indicating a departure from the reference residual distribution there. Occurrence reliability and monthly residual means provide complementary calibration checks.\nCompare the two models within this split on their matched requests. Its longer averaging period can change county-mean Moran’s I by reducing transient variation; an increase from test is not evidence of increased underlying dependence. Counties, repeated targets, and overlapping horizons remain dependent, so these plots carry no nominal row-independence tests or confidence bands.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#sec-validation-discrimination",
+    "href": "discussion.html#sec-validation-discrimination",
+    "title": "Results and Discussion",
+    "section": "3 Occurrence ranking on validation",
+    "text": "3 Occurrence ranking on validation\nThe test ROC and precision–recall curves provide development evidence. Here the same comparison is made on validation after both representatives have been fixed.\n\n\n\n\n\n\nFigure 1: Validation ROC and precision–recall curves for the two fixed forecast examples, stacked vertically. Legends report ROC AUC, trapezoidal PR AUC, and average precision (AP) from full tie-aware curves. The ROC diagonal is the chance reference; the horizontal PR reference is validation’s positive-response rate. Plotting points are thinned, and no confidence bands are attached.\n\n\n\nPR AUC and AP use different integration conventions and are labeled separately. Precision–recall comparisons across periods also depend on the positive-response rate, which differs between test and validation. Compare the models within each period before interpreting a change across periods. Occurrence ranking does not by itself establish calibration or accuracy for positive burned-area magnitudes.\nThe graph-and-sequence model retains the higher ROC AUC and both precision–recall summaries on validation. XGBoostLSS retains the lower CRPS. The ranking tradeoff seen during development therefore persists here, but the much smaller NLL difference cautions against treating an advantage in one period as a fixed class property.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#sec-validation-maps",
+    "href": "discussion.html#sec-validation-maps",
+    "title": "Results and Discussion",
+    "section": "4 Animated validation maps",
+    "text": "4 Animated validation maps\nThe six maps compare XGBoostLSS (top), observations (middle), and GCN–LSTM (bottom) for the same county, target month, and forecast horizon. On the left, model colors show \\(p_{\\mathrm{occ}}\\) and observed colors show binary presence or absence. On the right, model colors show \\(\\mu=E[Y\\mid Y&gt;0]\\), the expected burned fraction given a positive detection; observed colors show the recorded burned fraction. A model’s conditional mean is shown for every county, including counties with no observed burn that month.\nChoose a lead from one to twelve months, then play or scrub through target months. Each lead has 42 eligible origins because complete twelve-month target windows must fit within validation. The one-month series runs August 2020–January 2024; the twelve-month series runs July 2021–December 2024. Horizons are displayed separately. Probability colors use a fixed linear 0–1 scale. All three magnitude maps share a fixed logarithmic color transformation, including zero, to make small fractions visible; labels and inspected values remain in the original fraction units.\n\n\n\nPlay\n\nForecast lead  1 month 2 months 3 months 4 months 5 months 6 months 7 months 8 months 9 months 10 months 11 months 12 months  Target month \n\n\nLoading validation maps…\n\n\n\n\nXGBoostLSS · probability of a burn\n\n\n\n\n\n\nXGBoostLSS · mean fraction given a burn\n\n\n\n\n\n\nObserved · presence / absence\n\n\n\n\n\n\nObserved · burned fraction\n\n\n\n\n\n\nGCN–LSTM · probability of a burn\n\n\n\n\n\n\nGCN–LSTM · mean fraction given a burn\n\n\n\n\n\n\n\nProbability / observed presence\n\n\n\n\n0 / absent0.51 / present\n\n\n\nBurned fraction · transformed scale\n\n\n\n\n00.00010.0010.010.11\n\n\n\n\nPoint to a county to inspect its values.\n\n\nJavaScript is required for the animated maps. The reproduction download includes all map values and county boundaries.\n\n\n\nThe observed left panel contains only the two endpoint colors. In the right panels, \\(\\mu\\) is a conditional expectation, while the observed fraction is one realization and can be zero. Large observed burns can therefore be much darker than either model’s conditional mean. These maps complement the distributional scores; they are not maps of \\(E[Y]=p_{\\mathrm{occ}}\\mu\\).",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#interpreting-evidence",
+    "href": "discussion.html#interpreting-evidence",
+    "title": "Results and Discussion",
+    "section": "5 Interpreting evidence",
+    "text": "5 Interpreting evidence\nA small difference in mean score needs context: the target period, the size of the difference, the forecasting task, and the dependence among requests. An apparent advantage in one period need not persist in another. Temporal evaluation on these counties also does not establish performance on unseen counties.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#sec-reproduce",
+    "href": "discussion.html#sec-reproduce",
+    "title": "Results and Discussion",
+    "section": "6 Reproduce the analysis",
+    "text": "6 Reproduce the analysis\nDownload the source, prepared inputs, and selected models, XGBoostLSS prediction parameters, and GCN–LSTM prediction parameters. The source archive contains a README with commands to reconstruct forecast requests, recompute the scores and diagnostics, generate the animations, and render the six chapters. It also includes the model fitting and tuning code, selected configurations, checkpoints, and environment specifications. The prepared panel retains the response, identifiers, and inputs consumed by these models.\nThe prediction downloads preserve the saved parameter precision and support reproducing the reported results without repeating stochastic training. The download manifest provides checksums; the result manifest records configurations, selection results, and numerical diagnostics. After extracting the source archive, keep all three downloads together and follow its README. The rendered site carries the files needed for these steps.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "discussion.html#future-work",
+    "href": "discussion.html#future-work",
+    "title": "Results and Discussion",
+    "section": "7 Future work",
+    "text": "7 Future work\nPrediction uncertainty needs a clear prediction law, assessment of parameter and fitting variability, and checks on the dependence needed for multi-month paths or regional totals. For the recurrent model, sampled future responses can propagate through the decoder to form joint paths; deterministic mean feedback does not perform that integration. Tail calibration needs particular attention given the validation QQ curves.\nThe observation pipeline also needs a documented rule for satellite QA flags and partially mapped county-months. Missing or invalid observations must not silently become zero burned area. That work may change the response and require another fit.\nSeasonal baselines, regularized hurdle regressions, more extensive search, and repeated fits can help assess what extra complexity contributes. Origin-dated weather forecasts and other predictors can extend the information set when their release dates and publication delays are recorded. Evaluating operational data latency and holding out whole counties would address real-time use and transfer to unseen locations. If later diagnostic findings change the procedure, evaluate that revision on new data before claiming independent confirmation. The release’s result manifest records the inputs, fitted artifacts, score definitions, and checks behind this edition.",
+    "crumbs": [
+      "Problem",
+      "Results and Discussion"
+    ]
+  },
+  {
+    "objectID": "pytorch.html",
+    "href": "pytorch.html",
+    "title": "PyTorch",
+    "section": "",
+    "text": "The neural model combines two structures in the county-month panel. A graph convolution pools information across neighboring counties. An LSTM reads the sequence of those pooled representations and produces twelve forecast steps. Each step returns the same hurdle Beta parameters used by the tree model.\nThe encoder reads 48 months ending at the forecast origin. Its observed response inputs are burned fraction and the indicator that the fraction is positive. The remaining inputs are fixed terrain, calendar harmonics, and learned county identity. The model has no informative land-cover category and uses no annual, epoch, or observed target-month environmental variables.\n\n\nLet \\(A\\) be the symmetric county adjacency matrix. Add self-loops so each county retains its own information, and normalize by the resulting degrees:\n\\[\n\\tilde A=A+I,\\qquad\n\\hat A=\\tilde D^{-1/2}\\tilde A\\tilde D^{-1/2},\\qquad\n\\tilde D_{ii}=\\sum_j\\tilde A_{ij}.\n\\]\nA graph convolution applies\n\\[\nZ^{(r+1)}=\\sigma\\!\\left(\\hat A Z^{(r)}W^{(r)}\\right).\n\\]\nThe matrix \\(\\hat A\\) supplies a degree-weighted mixture of each county and its neighbors; \\(W^{(r)}\\) learns how to transform the mixture (Kipf and Welling 2017). With two layers a county can receive information from nodes two graph steps away. The adjacency is fixed geography, while the response signals being mixed are restricted to the observed history.\nNormalization limits differences caused simply by the number of neighbors. It does not force learned representations to remain small: the fitted weights and nonlinearities still determine their scale. A sparse graph operator is built once and reused throughout training and prediction.\n\n\n\nFor each encoder month, the model graph-convolves the county features and passes the resulting representation into an LSTM (Hochreiter and Schmidhuber 1997). Each county’s final hidden and cell states initialize the decoder.\nThe decoder then advances through twelve target months. It receives fixed terrain and the known target-month calendar, with its own previous expected response as feedback. It receives no observed response from the forecast window. Teacher forcing is disabled in this experiment, including during training.\n\n\n\n\n\n\nFigure 1: Schematic graph aggregation and recurrent decoding. The animation uses fewer months for legibility; the fitted experiment uses 48 encoder months and 12 decoder months. Values in the animation are illustrations, not fitted predictions.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "PyTorch"
+    ]
+  },
+  {
+    "objectID": "pytorch.html#sec-torch-model",
+    "href": "pytorch.html#sec-torch-model",
+    "title": "PyTorch",
+    "section": "",
+    "text": "The neural model combines two structures in the county-month panel. A graph convolution pools information across neighboring counties. An LSTM reads the sequence of those pooled representations and produces twelve forecast steps. Each step returns the same hurdle Beta parameters used by the tree model.\nThe encoder reads 48 months ending at the forecast origin. Its observed response inputs are burned fraction and the indicator that the fraction is positive. The remaining inputs are fixed terrain, calendar harmonics, and learned county identity. The model has no informative land-cover category and uses no annual, epoch, or observed target-month environmental variables.\n\n\nLet \\(A\\) be the symmetric county adjacency matrix. Add self-loops so each county retains its own information, and normalize by the resulting degrees:\n\\[\n\\tilde A=A+I,\\qquad\n\\hat A=\\tilde D^{-1/2}\\tilde A\\tilde D^{-1/2},\\qquad\n\\tilde D_{ii}=\\sum_j\\tilde A_{ij}.\n\\]\nA graph convolution applies\n\\[\nZ^{(r+1)}=\\sigma\\!\\left(\\hat A Z^{(r)}W^{(r)}\\right).\n\\]\nThe matrix \\(\\hat A\\) supplies a degree-weighted mixture of each county and its neighbors; \\(W^{(r)}\\) learns how to transform the mixture (Kipf and Welling 2017). With two layers a county can receive information from nodes two graph steps away. The adjacency is fixed geography, while the response signals being mixed are restricted to the observed history.\nNormalization limits differences caused simply by the number of neighbors. It does not force learned representations to remain small: the fitted weights and nonlinearities still determine their scale. A sparse graph operator is built once and reused throughout training and prediction.\n\n\n\nFor each encoder month, the model graph-convolves the county features and passes the resulting representation into an LSTM (Hochreiter and Schmidhuber 1997). Each county’s final hidden and cell states initialize the decoder.\nThe decoder then advances through twelve target months. It receives fixed terrain and the known target-month calendar, with its own previous expected response as feedback. It receives no observed response from the forecast window. Teacher forcing is disabled in this experiment, including during training.\n\n\n\n\n\n\nFigure 1: Schematic graph aggregation and recurrent decoding. The animation uses fewer months for legibility; the fitted experiment uses 48 encoder months and 12 decoder months. Values in the animation are illustrations, not fitted predictions.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "PyTorch"
+    ]
+  },
+  {
+    "objectID": "pytorch.html#three-constrained-parameter-heads",
+    "href": "pytorch.html#three-constrained-parameter-heads",
+    "title": "PyTorch",
+    "section": "2 Three constrained parameter heads",
+    "text": "2 Three constrained parameter heads\nEach decoder state is mapped to a gate score, a positive mean, and a precision:\npi_logit = self.head_pi(state)\nmu = _mu_link(self.head_mu(state), cfg.link, cfg.eps)\nphi = cfg.phi_min + F.softplus(self.head_phi(state))\np_occ = gate_fire_prob(pi_logit, cfg.link)\ne_y = p_occ * mu\nThe gate score describes the probability of zero, so its sign convention is opposite to the reported occurrence probability. With a logit link, \\(p_{\\mathrm{occ}}=\\operatorname{logistic}(-\\texttt{pi\\_logit})\\). The mean link maps into \\((0,1)\\) and the precision is positive.\nThe mean-head epsilon is a parameter constraint. It does not clamp positive responses in the likelihood. Exact zeros contribute only the gate term, and positive observations contribute their observed Beta log-density.\nThe implied positive-response shapes are \\(\\alpha=\\mu\\phi\\) and \\(\\beta=(1-\\mu)\\phi\\). Both concentrations below one give a U-shaped Beta; \\(\\alpha&lt;1\\) also allows a density that rises toward zero. A density near zero does not replace the separate probability mass at exactly zero.\n\n2.1 What mean feedback means\nThe next decoder step receives\nprevious_response = (p_occ * mu).detach()\nDetaching stops gradients through this numeric feedback input. Gradients still flow through the recurrent hidden state and later-step losses.\nThis is a deterministic mean-feedback path. The reported \\(p_{\\mathrm{occ}}\\), \\(\\mu\\), and \\(p_{\\mathrm{occ}}\\mu\\) are plug-in predictions along that path. For a nonlinear decoder, passing an expected response forward does not integrate over all possible earlier responses: \\(E[f(Y)]\\) need not equal \\(f(E[Y])\\). Its later-horizon distributions therefore need this explicit qualification.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "PyTorch"
+    ]
+  },
+  {
+    "objectID": "pytorch.html#select-the-fit-without-validation-feedback",
+    "href": "pytorch.html#select-the-fit-without-validation-feedback",
+    "title": "PyTorch",
+    "section": "3 Select the fit without validation feedback",
+    "text": "3 Select the fit without validation feedback\nFeature scaling is learned on training data. Target windows remain wholly inside their assigned split, and the encoder never extends beyond its origin. Later rolling origins use only the response history that has become observable by then.\nThe search chooses architecture and optimizer settings using test NLL. Early stopping also monitors test NLL, and the selected checkpoint is restored before prediction. Test is consequently development data. Validation does not select the architecture, training epoch, or checkpoint in this run.\nThis bounded search supplies the selected configuration and the predictions reported in the tutorial.\nOnly completed fits with finite test NLL are eligible for selection.\n\nThe completed search contains 18 trials, of which 6 completed with finite test NLL. Trial 11 supplied the selected fit.\nThe selected network uses 2 graph layer(s) of width 64, 1 LSTM layer(s) of width 64, and 2 calendar harmonic pair(s).\nThe result manifest records the complete configuration, selection evidence, and source hashes. \nThe Comparison chapter brings together both models’ train/test scores, residual diagnostics, training G1 STACF heatmaps, and occurrence ROC and precision–recall curves. All scores are recomputed from saved parameters after checking complete forecast keys and outcomes. Validation results appear afterwards in Discussion.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "PyTorch"
+    ]
+  },
+  {
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "Data and Forecast Inputs",
+    "section": "",
+    "text": "Each row records satellite-detected burned area divided by county land area for one month. The MODIS MCD64A1 burned-area product detects managed burning as well as wildfire. The modelling domain is a fixed set of 3,108 counties over January 2003–December 2024: 820,512 county-month rows.\nAn observed zero and a missing observation are different. An absent annual export, a missing county-month key, or an invalid numerical target must fail preparation rather than become zero fire. The local input audit checks the 22 annual shards, the full unique key set, and agreement between the raw burned-area ratios and all three model splits.\nThe response measures satellite detections. A recorded zero does not by itself establish complete satellite coverage or the absence of physical burning. The analysis does not impose a minimum mapped-area coverage threshold.\nIn particular, Uncertainty describes burn-date uncertainty. Valid input coverage is encoded in QA bit 1, while bit 2 flags a shortened mapping period. Official MCD64A1 documentation.",
+    "crumbs": [
+      "Problem",
+      "Data and Forecast Inputs"
+    ]
+  },
+  {
+    "objectID": "data.html#the-response-and-the-panel",
+    "href": "data.html#the-response-and-the-panel",
+    "title": "Data and Forecast Inputs",
+    "section": "",
+    "text": "Each row records satellite-detected burned area divided by county land area for one month. The MODIS MCD64A1 burned-area product detects managed burning as well as wildfire. The modelling domain is a fixed set of 3,108 counties over January 2003–December 2024: 820,512 county-month rows.\nAn observed zero and a missing observation are different. An absent annual export, a missing county-month key, or an invalid numerical target must fail preparation rather than become zero fire. The local input audit checks the 22 annual shards, the full unique key set, and agreement between the raw burned-area ratios and all three model splits.\nThe response measures satellite detections. A recorded zero does not by itself establish complete satellite coverage or the absence of physical burning. The analysis does not impose a minimum mapped-area coverage threshold.\nIn particular, Uncertainty describes burn-date uncertainty. Valid input coverage is encoded in QA bit 1, while bit 2 flags a shortened mapping period. Official MCD64A1 documentation.",
+    "crumbs": [
+      "Problem",
+      "Data and Forecast Inputs"
+    ]
+  },
+  {
+    "objectID": "data.html#the-feature-set-for-this-release",
+    "href": "data.html#the-feature-set-for-this-release",
+    "title": "Data and Forecast Inputs",
+    "section": "2 The feature set for this release",
+    "text": "2 The feature set for this release\nThe models use fixed geography, known calendar features, and observed response history.\n\n\n\n\n\n\n\nRetained input\nConstruction\n\n\n\n\nElevation and slope\nFixed county terrain values\n\n\nAspect sine and cosine\nFixed terrain orientation, avoiding the 0°/360° discontinuity\n\n\nCalendar harmonics\nKnown target month encoded by sine/cosine pairs\n\n\nBurned-area and occurrence history\nObservations at or before the forecast origin\n\n\nCounty graph and identity\nFixed geography; neighbor histories or learned representations\n\n\nXGBoost county summaries\nExpanding response means/rates using months strictly before origin\n\n\n\nTerrain is frozen from the first training month and then reused. Its training-only normalization is checked against the raw panel. Later copies of terrain cannot change an earlier feature vector. The retained terrain values need no missing-value imputation.\nThe models do not use population, built area, land-cover fractions or categories, fuel cover, target-month weather, drought, vegetation, or snow. For example, interpolating a 2016 population value between 2015 and 2020 would import a later source into an earlier row. Dropping the entire column removes that dependency.\nThis compact information set supports forecasting from geography, season, and fire history.",
+    "crumbs": [
+      "Problem",
+      "Data and Forecast Inputs"
+    ]
+  },
+  {
+    "objectID": "data.html#chronological-windows",
+    "href": "data.html#chronological-windows",
+    "title": "Data and Forecast Inputs",
+    "section": "3 Chronological windows",
+    "text": "3 Chronological windows\nThe panel has three contiguous target periods:\n\n\n\nSplit\nMonths\nPanel rows\n\n\n\n\nTrain\nJanuary 2003–May 2018\n574,980\n\n\nTest\nJune 2018–July 2020\n80,808\n\n\nValidation\nAugust 2020–December 2024\n164,724\n\n\n\nFor origin \\(o\\), both models use a 48-month history ending at \\(o\\) and predict the next twelve months. Assign a window only when all twelve target months belong to the same split.\nhistory = slice(origin - lookback + 1, origin + 1)\ntargets = slice(origin + 1, origin + horizon + 1)\n\nassert origin - lookback + 1 &gt;= 0\nassert origin + horizon &lt; number_of_months\nassert all(target_split[t] == selected_split\n           for t in range(origin + 1, origin + horizon + 1))\nA lag must satisfy both bounds, \\(0\\le\\text{history index}\\le o\\). Python’s negative indices wrap to the end of an array, so an upper-bound check alone is insufficient.\nA later origin may use earlier observed responses from another split as history. For example, a validation-origin forecast can use already observed test-period burns. That is the intended rolling prediction policy, not permission to use outcomes after that forecast’s origin. The entire validation period is not one forecast issued at its beginning.\nThe evaluation assumes burned-area observations through the stated origin are available.",
+    "crumbs": [
+      "Problem",
+      "Data and Forecast Inputs"
+    ]
+  },
+  {
+    "objectID": "data.html#training-derived-summaries-and-preprocessing",
+    "href": "data.html#training-derived-summaries-and-preprocessing",
+    "title": "Data and Forecast Inputs",
+    "section": "4 Training-derived summaries and preprocessing",
+    "text": "4 Training-derived summaries and preprocessing\nA county mean computed over the entire training period would expose early training rows to their own responses and to later training outcomes. XGBoost’s expanding summary at origin \\(o\\) is\n\\[\n\\bar y_{c,o}=\\frac{1}{o}\\sum_{t=0}^{o-1}y_{ct},\n\\]\nwith the occurrence rate constructed the same way. It is computed before the origin. Other explicit lags may use the observed response at \\(o\\), but none uses a target at \\(o+h\\). There is no climatology target-encoding feature in this experiment.\nThe expanding summary uses all earlier recorded months, not only the 48-month sequence window. That is a different representation of past information from the GNN’s finite encoder and learned county embedding; it does not introduce a future response.\nThe shared preprocessing code permits only forward filling from earlier predictor observations and rejects unresolved leading gaps. It never backfills from test into train, or from validation into an earlier period. Missing targets cannot be imputed.\nScalers are fitted on training data and applied unchanged to later splits. Annual land-cover categories cannot enter through a global vocabulary: the GNN omits that embedding, and the booster’s remaining schema placeholder is constant.",
+    "crumbs": [
+      "Problem",
+      "Data and Forecast Inputs"
+    ]
+  },
+  {
+    "objectID": "data.html#what-the-leakage-checks-exercise",
+    "href": "data.html#what-the-leakage-checks-exercise",
+    "title": "Data and Forecast Inputs",
+    "section": "5 What the leakage checks exercise",
+    "text": "5 What the leakage checks exercise\nSmall adversarial tests alter future responses and excluded covariates, then verify that earlier feature vectors and predictions remain unchanged. Positive controls alter legal history and verify that the relevant inputs do change. Separate tests check window bounds, complete split-contained horizons, and the strictly past county summaries.\nThe source audit also verifies that the stored targets match the raw exports, that retained terrain is constant apart from numerical reduction roundoff, and that its saved scaling uses only training moments. The fitted models, data files, code, and generated report are tied together by hashes.\nThese checks address feature separation. They do not establish satellite observation completeness, performance in unseen counties, or real-time availability of every input.",
+    "crumbs": [
+      "Problem",
+      "Data and Forecast Inputs"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Forecasting County Burned Area",
+    "section": "",
+    "text": "We want to predict a county’s monthly satellite-detected burned-area fraction, up to twelve months ahead. The intended panel has 3,108 continental US counties and 264 months, January 2003 through December 2024. Detected burning includes prescribed and agricultural fire as well as wildfire, so this response should not be called wildfire risk.\nThe response mixes exact zeros with positive fractions. We use a hurdle Beta model and compare two ways to estimate it: gradient-boosted trees and a graph-convolutional LSTM. Both use information available at the forecast origin.\nThe tutorial follows the modelling workflow: define the information available to a forecast, fit on train, tune on test, examine train/test residuals, then assess the chosen class representatives on validation.\nAfter the two model chapters, Comparison brings together the train/test evidence. Discussion then assesses the fixed fits on validation.",
+    "crumbs": [
+      "Problem",
+      "Forecasting County Burned Area"
+    ]
+  },
+  {
+    "objectID": "index.html#the-problem",
+    "href": "index.html#the-problem",
+    "title": "Forecasting County Burned Area",
+    "section": "",
+    "text": "We want to predict a county’s monthly satellite-detected burned-area fraction, up to twelve months ahead. The intended panel has 3,108 continental US counties and 264 months, January 2003 through December 2024. Detected burning includes prescribed and agricultural fire as well as wildfire, so this response should not be called wildfire risk.\nThe response mixes exact zeros with positive fractions. We use a hurdle Beta model and compare two ways to estimate it: gradient-boosted trees and a graph-convolutional LSTM. Both use information available at the forecast origin.\nThe tutorial follows the modelling workflow: define the information available to a forecast, fit on train, tune on test, examine train/test residuals, then assess the chosen class representatives on validation.\nAfter the two model chapters, Comparison brings together the train/test evidence. Discussion then assesses the fixed fits on validation.",
+    "crumbs": [
+      "Problem",
+      "Forecasting County Burned Area"
+    ]
+  },
+  {
+    "objectID": "index.html#sec-tracks",
+    "href": "index.html#sec-tracks",
+    "title": "Forecasting County Burned Area",
+    "section": "2 What a forecast may know",
+    "text": "2 What a forecast may know\nLet \\(y_{ct}\\) be the detected burned fraction for county \\(c\\) in month \\(t\\). A forecast issued from origin \\(o\\) predicts \\(y_{c,o+h}\\) for horizons \\(h=1,\\ldots,12\\).\nBoth models receive fixed terrain, calendar features, county geography, and historical burned fractions. Terrain is frozen from the first training month. Every response-history index is between zero and the origin. Annual land cover, population, built area, fuel cover, and target-month weather, drought, vegetation, and snow are excluded. The categorical land-cover input is also removed.\nThese are retrospective rolling-origin forecasts: historical observations through the stated origin are assumed available. Later origins can use observations that occurred since earlier forecasts were made, including past observations from an earlier split. No response after the origin enters a forecast’s inputs; training targets enter the fitting loss in the usual supervised-learning role. Operational product-release delays are not modelled here.\nThe data chapter describes the checks behind this information set.",
+    "crumbs": [
+      "Problem",
+      "Forecasting County Burned Area"
+    ]
+  },
+  {
+    "objectID": "index.html#sec-likelihood",
+    "href": "index.html#sec-likelihood",
+    "title": "Forecasting County Burned Area",
+    "section": "3 The hurdle Beta likelihood",
+    "text": "3 The hurdle Beta likelihood\nWrite \\(\\pi\\) for the probability that the detected fraction is zero. Given a positive response, use a Beta distribution with mean \\(\\mu\\) and precision \\(\\phi\\):\n\\[\n\\Pr(Y=0)=\\pi,\\qquad\nY\\mid Y&gt;0\\sim\\mathrm{Beta}(\\alpha,\\beta),\\qquad\n\\alpha=\\mu\\phi,\\quad\\beta=(1-\\mu)\\phi.\n\\tag{1}\\]\nHere \\(0&lt;\\pi&lt;1\\), \\(0&lt;\\mu&lt;1\\), and \\(\\phi&gt;0\\). The positive component has\n\\[\nE[Y\\mid Y&gt;0]=\\mu,\\qquad\n\\mathrm{Var}(Y\\mid Y&gt;0)=\\frac{\\mu(1-\\mu)}{1+\\phi}.\n\\]\nThe unconditional expected fraction combines occurrence and magnitude:\n\\[\nE[Y]=(1-\\pi)\\mu.\n\\tag{2}\\]\nThe prediction files call \\(1-\\pi\\) p_occ and the product e_y. These are distinct summaries: a model can rank occurrence well while misestimating positive magnitudes. “Occurrence” here means positive satellite detection, not an independently verified physical ignition.\nThe hurdle likelihood separates the zero mass from the continuous density:\n\\[\n\\log p(y)=\n\\begin{cases}\n\\log\\pi,&y=0,\\\\\n\\log(1-\\pi)+\\log f_{\\mathrm{Beta}}(y;\\mu\\phi,(1-\\mu)\\phi),&0&lt;y&lt;1.\n\\end{cases}\n\\tag{3}\\]\nThe negative average of these contributions is NLL, the fitting and tuning objective. Lower is better. A density can exceed one, so a negative NLL is possible. Summing these marginal scores over correlated county-months does not make those observations independent.\n\n3.1 Handling zero without moving positive observations\nThe Beta density must not score the zero atom. Numerical evaluation also needs to keep the unused branch finite: passing zero to a logarithm can poison automatic differentiation even when the resulting branch is discarded.\nis_positive = y &gt; 0\ny_for_beta = torch.where(is_positive, y, torch.full_like(y, 0.5))\nlog_beta = torch.distributions.Beta(mu * phi, (1 - mu) * phi).log_prob(y_for_beta)\nlog_prob = torch.where(\n    is_positive,\n    torch.nn.functional.logsigmoid(-zero_logit) + log_beta,\n    torch.nn.functional.logsigmoid(zero_logit),\n)\nloss = -log_prob.mean()\nThe dummy 0.5 affects only a discarded calculation for zero rows. Every positive response is scored at its observed value; it is not clamped upward to an epsilon. The maximum training-set burned fraction is 0.5641801116 (about 56.42%), observed in Clark County, Kansas (FIPS 20025), in March 2017. It is well below one, so the training responses do not require a probability mass at that endpoint.",
+    "crumbs": [
+      "Problem",
+      "Forecasting County Burned Area"
+    ]
+  },
+  {
+    "objectID": "index.html#sec-protocol",
+    "href": "index.html#sec-protocol",
+    "title": "Forecasting County Burned Area",
+    "section": "4 Fitting, tuning, and assessment",
+    "text": "4 Fitting, tuning, and assessment\nThe repository’s split names have the following roles:\n\n\n\n\n\n\n\n\nSplit\nAssigned panel months\nUse\n\n\n\n\nTrain\nJanuary 2003–May 2018\nFit parameters and preprocessing; inspect residuals\n\n\nTest\nJune 2018–July 2020\nTune hyperparameters and checkpoints; compare performance and residuals\n\n\nValidation\nAugust 2020–December 2024\nAssess the two selected class representatives\n\n\n\nThe models share a 48-month lookback and twelve-month target horizon. A window belongs to a split only when its entire target horizon falls within that split. Training-history overlap across windows is permitted; assigning the same response target to different splits is not.\nThe initial 48 months provide encoder/history warmup, so scored training targets begin in January 2007 rather than at the start of the training panel.\nEach class is tuned by minimizing the hurdle Beta NLL with the stated forecast inputs. The representative is the finite, completed trial with the lowest test NLL; pruned or failed trials cannot become the selected fit. Train/test diagnostics explain the strengths and limitations of that representative. Both model examples remain in the tutorial without requiring a definitive class winner.\nValidation is evaluated after the architecture, hyperparameters, and checkpoints are fixed. It assesses the selected representatives on a later target period.",
+    "crumbs": [
+      "Problem",
+      "Forecasting County Burned Area"
+    ]
+  },
+  {
+    "objectID": "index.html#reading-the-scores-and-diagnostics",
+    "href": "index.html#reading-the-scores-and-diagnostics",
+    "title": "Forecasting County Burned Area",
+    "section": "5 Reading the scores and diagnostics",
+    "text": "5 Reading the scores and diagnostics\nNLL assesses the predicted zero mass and positive density. We also report the continuous ranked probability score (CRPS), which compares the predictive CDF \\(F\\) to the observation:\n\\[\n\\mathrm{CRPS}(F,y)=E|X-y|-\\tfrac12E|X-X'|,\\qquad X,X'\\overset{\\mathrm{iid}}{\\sim}F.\n\\tag{4}\\]\nFor the hurdle Beta, this expectation has a closed form. Write \\(q=1-\\pi\\), \\(a=\\mu\\phi\\), \\(b=(1-\\mu)\\phi\\), let \\(B(a,b)\\) be the Beta function, and let \\(I_y(a,b)\\) be the regularized incomplete Beta function (the Beta CDF). For \\(0\\leq y\\leq1\\),\n\\[\n\\begin{aligned}\n\\mathrm{CRPS}(F,y)\n={}&\\pi y+q\\left[y\\{2I_y(a,b)-1\\}\n       +\\mu\\{1-2I_y(a+1,b)\\}\\right]\\\\\n&-\\pi q\\mu\n-\\frac{2q^2}{a+b}\\frac{B(2a,2b)}{B(a,b)^2}.\n\\end{aligned}\n\\tag{5}\\]\nThe first line is \\(E|X-y|\\). The second subtracts half the expected distance between two independent predictions, including the zero–positive pairs. The formula also applies at an observed zero, with \\(I_0(a,b)=0\\); it needs neither simulated draws nor a displacement of the response.\nCRPS is in burned-fraction units, and lower is better. NLL and CRPS emphasize different properties, so a model can improve one more than the other. Occurrence AUC/AP, the Brier score, and errors in the expected fraction add interpretable views of performance.\nFor the residual diagnostics, randomize the PIT within the CDF jump at zero and transform it to a normal quantile: \\(U\\sim\\mathrm{Uniform}(F(y^-),F(y))\\) and \\(r=\\Phi^{-1}(U)\\). A correctly specified known marginal gives a marginal standard-normal residual. It does not create independence across counties, months, or repeated horizons.\nUse QQ plots, occurrence reliability, and temporal/spatial residual structure to see what a mean score hides. The plots are descriptive; millions of overlapping county-horizon rows are not millions of independent replications.",
+    "crumbs": [
+      "Problem",
+      "Forecasting County Burned Area"
+    ]
+  },
+  {
+    "objectID": "xgboostlss.html",
+    "href": "xgboostlss.html",
+    "title": "XGBoostLSS",
+    "section": "",
+    "text": "A forecast needs a probability of positive burned area and a model for its magnitude. XGBoostLSS (März 2019) connects the tree-building machinery of XGBoost to a distributional loss. Its name means location, scale and shape: the model learns a score for each parameter of the chosen distribution.\nHere three scores describe the hurdle Beta. Two become the Beta concentrations, \\(\\alpha&gt;0\\) and \\(\\beta&gt;0\\); the third becomes the zero probability \\(\\pi\\in(0,1)\\). The quantities we report are\n\\[\np_{\\mathrm{occ}}=1-\\pi,\\qquad\n\\mu=\\frac{\\alpha}{\\alpha+\\beta},\\qquad\n\\phi=\\alpha+\\beta,\\qquad\n\\widehat E[Y]=p_{\\mathrm{occ}}\\mu.\n\\]\n\\(\\mu\\) describes the positive fraction; \\(\\widehat E[Y]\\) includes the chance of a zero. These answer different questions, especially in counties with infrequent detections.\n\n\nAt boosting round \\(r\\), the model updates its three unconstrained scores:\n\\[\n\\boldsymbol\\eta^{(r)}(x)\n=\\boldsymbol\\eta^{(r-1)}(x)+\\nu\\boldsymbol f^{(r)}(x).\n\\]\nThe learning rate \\(\\nu\\) scales the update. Gradients and Hessians of the negative log-likelihood determine the tree splits and leaf values. Separate trees update the three parameters; the implementation does not use cross-parameter Hessian blocks. Its L2 derivative stabilization rescales the parameter updates before tree fitting.\nResponse functions keep the parameters inside their domains. The first concentration uses a softplus, the second a scaled sigmoid with a cap, and the gate a sigmoid. The concentration cap and maximum leaf update constrain numerical behavior. They are part of this implementation and belong in its recorded configuration.\n\n\n\nFor a zero response, the likelihood contribution is \\(\\pi\\). For a positive response, it is \\((1-\\pi)\\operatorname{Beta}(y;\\alpha,\\beta)\\). Adding a density evaluated near zero to the gate would mix a probability mass and a continuous density.\nThe custom distribution implements the two branches directly:\ndef log_prob(self, value):\n    is_zero = value == 0\n    safe_value = torch.where(is_zero, torch.full_like(value, 0.5), value)\n    return torch.where(\n        is_zero,\n        torch.log(self.gate),\n        torch.log1p(-self.gate) + self.base_dist.log_prob(safe_value),\n    )\nThe dummy value \\(0.5\\) prevents an unused \\(\\log(0)\\) calculation from producing invalid gradients. Positive observations retain their exact recorded values. The search and fit both use this likelihood.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "XGBoostLSS"
+    ]
+  },
+  {
+    "objectID": "xgboostlss.html#sec-xgb-model",
+    "href": "xgboostlss.html#sec-xgb-model",
+    "title": "XGBoostLSS",
+    "section": "",
+    "text": "A forecast needs a probability of positive burned area and a model for its magnitude. XGBoostLSS (März 2019) connects the tree-building machinery of XGBoost to a distributional loss. Its name means location, scale and shape: the model learns a score for each parameter of the chosen distribution.\nHere three scores describe the hurdle Beta. Two become the Beta concentrations, \\(\\alpha&gt;0\\) and \\(\\beta&gt;0\\); the third becomes the zero probability \\(\\pi\\in(0,1)\\). The quantities we report are\n\\[\np_{\\mathrm{occ}}=1-\\pi,\\qquad\n\\mu=\\frac{\\alpha}{\\alpha+\\beta},\\qquad\n\\phi=\\alpha+\\beta,\\qquad\n\\widehat E[Y]=p_{\\mathrm{occ}}\\mu.\n\\]\n\\(\\mu\\) describes the positive fraction; \\(\\widehat E[Y]\\) includes the chance of a zero. These answer different questions, especially in counties with infrequent detections.\n\n\nAt boosting round \\(r\\), the model updates its three unconstrained scores:\n\\[\n\\boldsymbol\\eta^{(r)}(x)\n=\\boldsymbol\\eta^{(r-1)}(x)+\\nu\\boldsymbol f^{(r)}(x).\n\\]\nThe learning rate \\(\\nu\\) scales the update. Gradients and Hessians of the negative log-likelihood determine the tree splits and leaf values. Separate trees update the three parameters; the implementation does not use cross-parameter Hessian blocks. Its L2 derivative stabilization rescales the parameter updates before tree fitting.\nResponse functions keep the parameters inside their domains. The first concentration uses a softplus, the second a scaled sigmoid with a cap, and the gate a sigmoid. The concentration cap and maximum leaf update constrain numerical behavior. They are part of this implementation and belong in its recorded configuration.\n\n\n\nFor a zero response, the likelihood contribution is \\(\\pi\\). For a positive response, it is \\((1-\\pi)\\operatorname{Beta}(y;\\alpha,\\beta)\\). Adding a density evaluated near zero to the gate would mix a probability mass and a continuous density.\nThe custom distribution implements the two branches directly:\ndef log_prob(self, value):\n    is_zero = value == 0\n    safe_value = torch.where(is_zero, torch.full_like(value, 0.5), value)\n    return torch.where(\n        is_zero,\n        torch.log(self.gate),\n        torch.log1p(-self.gate) + self.base_dist.log_prob(safe_value),\n    )\nThe dummy value \\(0.5\\) prevents an unused \\(\\log(0)\\) calculation from producing invalid gradients. Positive observations retain their exact recorded values. The search and fit both use this likelihood.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "XGBoostLSS"
+    ]
+  },
+  {
+    "objectID": "xgboostlss.html#sec-xgb-horizon",
+    "href": "xgboostlss.html#sec-xgb-horizon",
+    "title": "XGBoostLSS",
+    "section": "2 One row for each county, origin, and horizon",
+    "text": "2 One row for each county, origin, and horizon\nThis is a direct multi-horizon model. The lead time is a feature, so one booster learns the twelve forecasts issued at each origin. Each response window belongs wholly to train, test, or validation. The lookback is 48 months and the forecast horizon is 12 months.\nThe inputs are deliberately compact:\n\n\n\n\n\n\n\nInput\nWhen it is known\n\n\n\n\nElevation, slope, sine and cosine of aspect\nFixed county terrain\n\n\nTarget-month calendar harmonics and horizon\nKnown at issuance\n\n\nBurned fraction, occurrence, lags, rolling summaries\nAt or before the origin\n\n\nNeighbor summaries of burned-area history\nAt or before the origin\n\n\nExpanding county response summaries\nStrictly before the origin\n\n\n\nCounty adjacency supplies the geography for neighbor summaries. The land-cover category is held constant and carries no environmental information. No annual, epoch, or observed target-month environmental measurements enter this fit. The data chapter describes the retained response and its limitations.\n\n2.1 Keep every history index inside the past\nA lagged response must satisfy \\(0\\leq\\text{index}\\leq o\\), where \\(o\\) is the origin. The lower bound matters because a negative Python index wraps to the end of an array. The feature builder checks the available lookback against the largest requested lag.\nCounty means also need an origin boundary. A county’s full-training response mean would contain outcomes that were still in the future at early training origins. These fits instead use the expanding mean and occurrence rate strictly before each origin. A later rolling forecast can use observations that have arrived since an earlier forecast, while the fitted booster stays fixed.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "XGBoostLSS"
+    ]
+  },
+  {
+    "objectID": "xgboostlss.html#fit-on-train-choose-on-test",
+    "href": "xgboostlss.html#fit-on-train-choose-on-test",
+    "title": "XGBoostLSS",
+    "section": "3 Fit on train, choose on test",
+    "text": "3 Fit on train, choose on test\nThe search uses the test split to choose hyperparameters and boosting duration. Consequently its test score is a development score. The recorded search budget is limited, so the selected configuration is an example of this procedure, not an established optimum for the model class.\nThe selected fit is then used unchanged to predict train, test, and validation. The saved configuration records the restricted forecast mode, feature names, lookback, horizon, links, and boosting settings. The results generator verifies forecast keys and targets against the canonical split files and recomputes its scores from the saved parameters.\n\nThe completed search contains 12 trials, of which 12 completed with finite test NLL. Trial 7 supplied the selected fit.\nThe fit retains 482 boosting rounds, 2 spatial shell(s), 7 additional temporal lag(s), and 5 calendar harmonic pair(s).\nThe result manifest records the complete configuration, selection evidence, and source hashes. \nThe Comparison chapter brings together both models’ train/test scores, residual diagnostics, training G1 STACF heatmaps, and occurrence ROC and precision–recall curves. All scores are recomputed from saved parameters after checking complete forecast keys and outcomes. Validation results appear afterwards in Discussion.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "XGBoostLSS"
+    ]
+  },
+  {
+    "objectID": "xgboostlss.html#what-these-outputs-establish",
+    "href": "xgboostlss.html#what-these-outputs-establish",
+    "title": "XGBoostLSS",
+    "section": "4 What these outputs establish",
+    "text": "4 What these outputs establish\nThe booster supplies a fitted hurdle distribution for each requested horizon. The positive mean, occurrence probability, and expected fraction are deterministic outputs of one fitted model. Scores describe those outputs on the recorded forecast requests; repeated horizons do not create independent observations.\nThese separate marginals do not specify a joint multi-month trajectory.",
+    "crumbs": [
+      "Problem",
+      "Model classes",
+      "XGBoostLSS"
+    ]
+  },
+  {
+    "objectID": "comparison.html",
+    "href": "comparison.html",
+    "title": "Comparison",
+    "section": "",
+    "text": "The XGBoostLSS and GCN–LSTM examples share the same restricted forecast information: fixed terrain, calendar, county geography, and burned-area history available at each origin. Both use a 48-month lookback and twelve-month forecast horizon; XGBoost’s expanding county summaries additionally retain earlier history. Each class representative was selected by test NLL.\nThis chapter gathers the train/test evidence before looking at validation. Train diagnostics describe fitted data; test scores and diagnostics describe data already used for development. They help explain the selected examples, without establishing an independent model-class ranking. Both examples remain in the tutorial.",
+    "crumbs": [
+      "Problem",
+      "Comparison"
+    ]
+  },
+  {
+    "objectID": "comparison.html#compare-the-selected-examples",
+    "href": "comparison.html#compare-the-selected-examples",
+    "title": "Comparison",
+    "section": "",
+    "text": "The XGBoostLSS and GCN–LSTM examples share the same restricted forecast information: fixed terrain, calendar, county geography, and burned-area history available at each origin. Both use a 48-month lookback and twelve-month forecast horizon; XGBoost’s expanding county summaries additionally retain earlier history. Each class representative was selected by test NLL.\nThis chapter gathers the train/test evidence before looking at validation. Train diagnostics describe fitted data; test scores and diagnostics describe data already used for development. They help explain the selected examples, without establishing an independent model-class ranking. Both examples remain in the tutorial.",
+    "crumbs": [
+      "Problem",
+      "Comparison"
+    ]
+  },
+  {
+    "objectID": "comparison.html#sec-forecast-diagnostics",
+    "href": "comparison.html#sec-forecast-diagnostics",
+    "title": "Comparison",
+    "section": "2 Scores and diagnostics",
+    "text": "2 Scores and diagnostics\nNLL evaluates the fitted probability mass or density at each response. CRPS compares the fitted cumulative distribution with the observed response. Lower values are better for both. The occurrence Brier score measures probability error; expected-fraction MAE measures error in \\(p_{\\mathrm{occ}}\\mu\\). These scores use saved plug-in hurdle distributions, not prediction intervals or parameter-uncertainty distributions.\n\nTrain and test comparisons use identical full forecast keys and outcomes for both models.\n\n\n\n\n\n\n\n\n\n\n\n\nSplit\nModel\nForecast requests\nNLL\nCRPS\nExpected-fraction MAE\nOccurrence Brier\n\n\n\n\nTrain\nXGBoostLSS\n4,699,296\n-0.247288\n0.0002081\n0.0003282\n0.055366\n\n\nTrain\nGCN → LSTM\n4,699,296\n-0.262647\n0.0002046\n0.0003331\n0.051323\n\n\nTest\nXGBoostLSS\n559,440\n-0.199363\n0.0001836\n0.0003095\n0.048028\n\n\nTest\nGCN → LSTM\n559,440\n-0.205715\n0.0001841\n0.0003136\n0.046989\n\n\n\nResidual summaries use the same randomized residuals as the plots. Undefined correlations are shown as an em dash.\n\n\n\n\n\n\n\n\n\n\n\nSplit\nModel\nResidual mean\nResidual SD\nCounty-mean Moran I\nMonthly lag-1 r\n\n\n\n\nTrain\nXGBoostLSS\n-0.005\n0.992\n0.089\n0.229\n\n\nTrain\nGCN → LSTM\n0.012\n1.002\n-0.025\n0.242\n\n\nTest\nXGBoostLSS\n-0.025\n0.982\n0.104\n0.055\n\n\nTest\nGCN → LSTM\n-0.004\n1.003\n0.123\n-0.184\n\n\n\n \nOn test, the graph-and-sequence model has the lower NLL, while XGBoostLSS has a slightly lower CRPS. The scoring rules emphasize different properties of the fitted distribution. These are descriptive comparisons of two fitted examples, without a significance or winner claim.\n\n2.1 Reading the residual diagnostics\nThe QQ curves use randomized quantile residuals: a zero is randomized inside its predicted probability mass, positive responses use the fitted cumulative probability, and the resulting values are transformed to the standard normal scale. Agreement with the diagonal is descriptive evidence about marginal calibration. A fixed seed makes the randomization reproducible.\nOccurrence reliability groups similar predicted probabilities and compares their mean with the observed positive-response proportion. Monthly curves average residuals by target month and can reveal persistent seasonal or temporal errors. Repeated forecasts of the same county-month contribute separate forecast requests; they are not independent experimental replications.\nThe spatial summary is Moran’s I of each county’s mean randomized residual, using the saved county graph. Its adjacency is symmetrized, self-loops are removed, and each non-isolated county’s neighbor weights sum to one. Isolated counties have zero weight rows and remain in the centering and county count. With centered county means \\(z\\), weights \\(W\\), and \\(N\\) counties, the reported coefficient is \\(I=(N/\\sum_{ij}W_{ij})(z^\\top Wz)/(z^\\top z)\\). The temporal summary is the correlation of consecutive target-month mean residuals. Neither coefficient comes with an independence or permutation p-value.\nThe averaging periods differ across splits. Longer averaging can reveal persistent county patterns by reducing transient variation, changing Moran’s I even without stronger underlying dependence. Compare the two models within a split on their matched requests; an increase across splits is not evidence of increased dependence. No nominal row-independence tests or confidence bands are attached to these curves.",
+    "crumbs": [
+      "Problem",
+      "Comparison"
+    ]
+  },
+  {
+    "objectID": "comparison.html#sec-training-stacf",
+    "href": "comparison.html#sec-training-stacf",
+    "title": "Comparison",
+    "section": "3 Training space-time autocorrelation",
+    "text": "3 Training space-time autocorrelation\nThe G1 diagnostic retains the county-by-month residual field instead of first averaging away either dimension. Spatial order zero uses the county itself; orders one through three use exclusive neighbor shells at that graph distance. Temporal lag runs from zero to 24 months, with pairs formed within each forecast horizon before pooling.\n\n3.1 XGBoostLSS\n\n\n\n\n\n\nFigure 1: XGBoostLSS training G1 STACF, regenerated from the selected forecast fit. Top: globally centered residuals. Bottom: the cross-county mean removed separately for each horizon and target month. Color shows residual autocorrelation; cell labels are two-sided permutation p-values rounded to two decimals. The structural self-correlation is masked.\n\n\n\n\n\n3.2 GCN–LSTM\n\n\n\n\n\n\nFigure 2: GCN–LSTM training G1 STACF from the selected checkpoint. Top: globally centered residuals. Bottom: the cross-county mean removed separately within each horizon and target month. The color scale matches the XGBoostLSS figure. Numbers are permutation p-values rounded to two decimals; the order-zero/lag-zero self-correlation is masked.\n\n\n\nThe lower panel in each figure removes a common monthly component, helping distinguish broad monthly shifts from the remaining local persistence. The shared color scale supports comparison between models. A quiet training heatmap alone does not establish independent residuals or successful generalization.\nThe temporal reference shuffles whole target months, moving all horizons together; the spatial reference shuffles county labels while preserving each county’s series. Cells at spatial order zero use the month-permutation p-value; cells at temporal lag zero use the county-permutation value. When both orders are positive, the display uses the larger of the two p-values, following the existing G1 convention. The self-correlation has no informative test and is shown with an em dash.\nThese are unadjusted, exploratory permutation-reference values, not independent-row tests or a multiple-comparison correction. The correlation magnitude and the assumptions behind the shuffles are necessary context for these values. Each figure gives the number of draws and the minimum attainable p-value. Cell labels are rounded Monte Carlo estimates; unrounded values and the permutation settings are in the result manifest.",
+    "crumbs": [
+      "Problem",
+      "Comparison"
+    ]
+  },
+  {
+    "objectID": "comparison.html#sec-test-discrimination",
+    "href": "comparison.html#sec-test-discrimination",
+    "title": "Comparison",
+    "section": "4 Occurrence ranking on test",
+    "text": "4 Occurrence ranking on test\nROC and precision–recall curves compare occurrence rankings over thresholds. ROC shows sensitivity against the false-positive rate; precision–recall focuses on the positive-response proportion among predictions classified as positive as recall increases. They complement the likelihood used for tuning and do not assess the positive burned fraction or probability calibration by themselves.\n\n\n\n\n\n\nFigure 3: Test-set ROC and precision–recall curves for model selection, stacked vertically. Legends distinguish ROC AUC, trapezoidal PR AUC, and average precision (AP). Metrics use all forecast requests and complete tied-score groups; plotting points are thinned. The dashed references are the ROC chance diagonal and the test positive-response rate.\n\n\n\nAP weights precision by recall increments; trapezoidal PR AUC linearly interpolates between curve points. They need not be identical. The graph-and-sequence model has higher test ROC AUC and both precision–recall summaries, while XGBoostLSS has the lower test CRPS. Occurrence ranking and the full burned-fraction distribution therefore need separate assessment.\nThe test split has already been used for tuning, so these are development comparisons. With both representatives fixed, Discussion assesses their validation scores and diagnostics without selecting a replacement winner.",
+    "crumbs": [
+      "Problem",
+      "Comparison"
+    ]
+  }
+]

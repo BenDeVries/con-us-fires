@@ -1,0 +1,189 @@
+---
+title: "Results and Discussion"
+subtitle: "Validation of the selected forecast examples"
+author:
+  - name: "Ben DeVries"
+  - name: "Codex (OpenAI)"
+date: 2026-09-07
+---
+
+## Assess the fixed examples
+
+The [Comparison chapter](comparison.qmd) brings together train/test evidence for
+the selected XGBoostLSS and GCN–LSTM examples. Here validation assesses those
+fixed fits afterwards. It does not select an architecture, checkpoint, or
+replacement winner.
+
+A limited search and one fit per example do not establish a definitive class
+ranking. The response measures [satellite-detected burned area](data.qmd), with
+the observation and coverage limitations described in the data chapter.
+
+## Validation scores and diagnostics {#sec-validation-diagnostics}
+
+The score definitions and residual construction are the same as in
+[Comparison](comparison.qmd#sec-forecast-diagnostics). NLL and CRPS describe saved
+plug-in hurdle distributions. They do not quantify parameter uncertainty or
+uncertainty in the neural model's mean-feedback path.
+
+<!-- BEGIN FORECAST VALIDATION RESULTS -->
+Validation assesses the two fixed forecast examples on matching forecast requests.
+
+| Split | Model | Forecast requests | NLL | CRPS | Expected-fraction MAE | Occurrence Brier |
+|---|---|---:|---:|---:|---:|---:|
+| Validation | XGBoostLSS | 1,566,432 | -0.233298 | 0.0002068 | 0.0003285 | 0.055992 |
+| Validation | GCN → LSTM | 1,566,432 | -0.233627 | 0.0002080 | 0.0003357 | 0.054928 |
+
+Residual summaries use the same randomized residuals as the plots. Undefined correlations are shown as an em dash.
+
+| Split | Model | Residual mean | Residual SD | County-mean Moran I | Monthly lag-1 r |
+|---|---|---:|---:|---:|---:|
+| Validation | XGBoostLSS | -0.001 | 1.002 | 0.137 | 0.205 |
+| Validation | GCN → LSTM | 0.023 | 1.027 | 0.185 | 0.202 |
+
+![Later-period validation diagnostics for the two fixed forecast examples. The vertically stacked panels describe the selected fits and do not choose a winner.](assets/forecast/validation-diagnostics.png){#fig-forecast-validation}
+<!-- END FORECAST VALIDATION RESULTS -->
+
+On validation, the models' NLLs are much closer than on test, and XGBoostLSS
+continues to have the lower CRPS. These are descriptive comparisons under different
+scoring rules, without a significance or winner claim.
+
+Both models' validation QQ curves bend above the reference line in the upper tail,
+indicating a departure from the reference residual distribution there. Occurrence
+reliability and monthly residual means provide complementary calibration checks.
+
+Compare the two models within this split on their matched requests. Its longer
+averaging period can change county-mean Moran's I by reducing transient variation;
+an increase from test is not evidence of increased underlying dependence. Counties,
+repeated targets, and overlapping horizons remain dependent, so these plots carry
+no nominal row-independence tests or confidence bands.
+
+## Occurrence ranking on validation {#sec-validation-discrimination}
+
+The [test ROC and precision–recall curves](comparison.qmd#sec-test-discrimination)
+provide development evidence. Here the same comparison is made on validation after
+both representatives have been fixed.
+
+![Validation ROC and precision–recall curves for the two fixed forecast examples,
+stacked vertically. Legends report ROC AUC, trapezoidal PR AUC, and average precision
+(AP) from full tie-aware curves. The ROC diagonal is the chance reference; the
+horizontal PR reference is validation's positive-response rate. Plotting points
+are thinned, and no confidence bands are attached.](assets/forecast/validation-discrimination.png){#fig-validation-discrimination}
+
+PR AUC and AP use different integration conventions and are labeled separately.
+Precision–recall comparisons across periods also depend on the positive-response
+rate, which differs between test and validation. Compare the models within each
+period before interpreting a change across periods. Occurrence ranking does not
+by itself establish calibration or accuracy for positive burned-area magnitudes.
+
+The graph-and-sequence model retains the higher ROC AUC and both precision–recall
+summaries on validation. XGBoostLSS retains the lower CRPS. The ranking tradeoff
+seen during development therefore persists here, but the much smaller NLL difference
+cautions against treating an advantage in one period as a fixed class property.
+
+## Animated validation maps {#sec-validation-maps}
+
+The six maps compare **XGBoostLSS (top)**, **observations (middle)**, and
+**GCN–LSTM (bottom)** for the same county, target month, and forecast horizon.
+On the left, model colors show $p_{\mathrm{occ}}$ and observed colors show binary
+presence or absence. On the right, model colors show $\mu=E[Y\mid Y>0]$,
+the expected burned fraction given a positive detection; observed colors show the
+recorded burned fraction. A model's conditional mean is shown for every county,
+including counties with no observed burn that month.
+
+Choose a lead from one to twelve months, then play or scrub through target months.
+Each lead has 42 eligible origins because complete twelve-month target windows
+must fit within validation. The one-month series runs August 2020–January 2024;
+the twelve-month series runs July 2021–December 2024. Horizons are displayed separately.
+Probability colors use a fixed linear 0–1 scale. All three magnitude maps share a
+fixed logarithmic color transformation, including zero, to make small fractions
+visible; labels and inspected values remain in the original fraction units.
+
+<div id="validation-maps" class="validation-maps">
+<div class="map-controls">
+<button class="map-play" type="button" aria-pressed="false" disabled>Play</button>
+<label>Forecast lead <select class="map-horizon" aria-label="Forecast lead in months">
+<option value="1">1 month</option>
+<option value="2">2 months</option>
+<option value="3">3 months</option>
+<option value="4">4 months</option>
+<option value="5">5 months</option>
+<option value="6">6 months</option>
+<option value="7">7 months</option>
+<option value="8">8 months</option>
+<option value="9">9 months</option>
+<option value="10">10 months</option>
+<option value="11">11 months</option>
+<option value="12">12 months</option>
+</select></label>
+<label class="map-time-label">Target month <input class="map-time" type="range" min="0" max="41" value="0" step="1" aria-label="Validation target month" disabled></label>
+</div>
+<p class="map-status" role="status">Loading validation maps…</p>
+<div class="map-grid">
+<div><h4>XGBoostLSS · probability of a burn</h4><canvas role="img" aria-label="XGBoostLSS predicted probability by county"></canvas></div>
+<div><h4>XGBoostLSS · mean fraction given a burn</h4><canvas role="img" aria-label="XGBoostLSS conditional mean burned fraction by county"></canvas></div>
+<div><h4>Observed · presence / absence</h4><canvas role="img" aria-label="Observed binary burn presence by county"></canvas></div>
+<div><h4>Observed · burned fraction</h4><canvas role="img" aria-label="Observed burned fraction by county"></canvas></div>
+<div><h4>GCN–LSTM · probability of a burn</h4><canvas role="img" aria-label="GCN–LSTM predicted probability by county"></canvas></div>
+<div><h4>GCN–LSTM · mean fraction given a burn</h4><canvas role="img" aria-label="GCN–LSTM conditional mean burned fraction by county"></canvas></div>
+</div>
+<div class="map-legends">
+<div><strong>Probability / observed presence</strong><div class="map-probability-bar"></div><div class="map-ticks"><span>0 / absent</span><span>0.5</span><span>1 / present</span></div></div>
+<div><strong>Burned fraction · transformed scale</strong><div class="map-fraction-bar"></div><div class="map-ticks"><span>0</span><span>0.0001</span><span>0.001</span><span>0.01</span><span>0.1</span><span>1</span></div></div>
+</div>
+<p class="map-detail">Point to a county to inspect its values.</p>
+<noscript>JavaScript is required for the animated maps. The reproduction download includes all map values and county boundaries.</noscript>
+</div>
+<script src="assets/forecast/validation-maps.js" defer></script>
+
+The observed left panel contains only the two endpoint colors. In the right panels,
+$\mu$ is a conditional expectation, while the observed fraction is one realization
+and can be zero. Large observed burns can therefore be much darker than either
+model's conditional mean. These maps complement the distributional scores; they
+are not maps of $E[Y]=p_{\mathrm{occ}}\mu$.
+
+## Interpreting evidence
+
+A small difference in mean score needs context: the target period, the size of the
+difference, the forecasting task, and the dependence among requests. An apparent
+advantage in one period need not persist in another. Temporal evaluation on these
+counties also does not establish performance on unseen counties.
+
+## Reproduce the analysis {#sec-reproduce}
+
+Download the [source, prepared inputs, and selected models](assets/reproduction/tutorial-source.zip),
+[XGBoostLSS prediction parameters](assets/reproduction/xgb-predictions.zip), and
+[GCN–LSTM prediction parameters](assets/reproduction/gnn-predictions.zip).
+The source archive contains a README with commands to reconstruct forecast requests,
+recompute the scores and diagnostics, generate the animations, and render the six
+chapters. It also includes the model fitting and tuning code, selected configurations,
+checkpoints, and environment specifications. The prepared panel retains the response,
+identifiers, and inputs consumed by these models.
+
+The prediction downloads preserve the saved parameter precision and support
+reproducing the reported results without repeating stochastic training. The
+[download manifest](assets/reproduction/manifest.json) provides checksums; the
+[result manifest](assets/forecast/summary.json) records configurations, selection
+results, and numerical diagnostics. After extracting the source archive, keep all
+three downloads together and follow its README. The rendered site carries the
+files needed for these steps.
+
+## Future work
+
+Prediction uncertainty needs a clear prediction law,
+assessment of parameter and fitting variability, and checks on the dependence needed
+for multi-month paths or regional totals. For the recurrent model, sampled future responses can propagate through the decoder
+to form joint paths; deterministic mean feedback does not perform that integration.
+Tail calibration needs particular attention given the validation QQ curves.
+
+The observation pipeline also needs a documented rule for satellite QA flags and
+partially mapped county-months. Missing or invalid observations must not silently
+become zero burned area. That work may change the response and require another fit.
+
+Seasonal baselines, regularized hurdle regressions, more extensive search, and repeated
+fits can help assess what extra complexity contributes. Origin-dated weather forecasts
+and other predictors can extend the information set when their release dates and
+publication delays are recorded. Evaluating operational data latency and holding
+out whole counties would address real-time use and transfer to unseen locations. If later diagnostic findings
+change the procedure, evaluate that revision on new data before claiming independent
+confirmation. The release's [result manifest](assets/forecast/summary.json) records
+the inputs, fitted artifacts, score definitions, and checks behind this edition.

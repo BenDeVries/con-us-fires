@@ -1,0 +1,16 @@
+{
+  "archives": {
+    "tutorial-source.zip": {
+      "bytes": 4046904,
+      "sha256": "a9462c20858934823e136aa753a3d775a2df2e480a473dc06fa329c645303607"
+    },
+    "xgb-predictions.zip": {
+      "bytes": 69772241,
+      "sha256": "ca8f4618af398cbd02fe25d11255ee407c75ded157a64970b02249c084fde29e"
+    },
+    "gnn-predictions.zip": {
+      "bytes": 72689887,
+      "sha256": "bfc9c2ec6b9e42ea78c5c22417ef44fb2c659aafa008bb3e0c59d6e04d120b70"
+    }
+  }
+}

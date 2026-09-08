@@ -1,0 +1,64 @@
+/* Wider measure than cosmo's default: the variable tables and ladder tables are wide. */
+main {
+  max-width: 62rem;
+}
+
+/* Figure captions carry interpretation here, not just a label, so they need to read as
+   body text rather than as a caption fragment. */
+figcaption,
+.figure-caption {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #333;
+  text-align: left;
+  margin-top: 0.6rem;
+}
+
+/* Ladder and variable tables run long; keep them scannable. */
+table {
+  font-size: 0.92rem;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+table thead th {
+  border-bottom: 2px solid #444;
+}
+
+/* Animated GIFs should not overflow the measure. */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Numbered display equations are referenced by number throughout. */
+.katex-display,
+.MathJax_Display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Keep model / observed rows and paired quantities aligned at every viewport size. */
+.validation-maps { margin: 1.5rem 0; border: 1px solid #d4ddda; border-radius: 8px; padding: 1rem; }
+.map-controls { display: flex; align-items: center; flex-wrap: wrap; gap: .8rem; }
+.map-controls button, .map-controls select { padding: .35rem .65rem; border: 1px solid #79968b; border-radius: 4px; background: #f7faf9; color: #163e30; }
+.map-controls button { min-width: 4.5rem; }
+.map-time-label { flex: 1; min-width: 12rem; }
+.map-time { width: 100%; accent-color: #17634e; }
+.map-status { font-size: .9rem; margin: .65rem 0; min-height: 1.5rem; }
+.map-grid, .map-legends { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem 1rem; }
+.map-grid h4 { font-size: .8rem; margin: .3rem 0 0; text-align: center; }
+.map-grid canvas { display: block; width: 100%; height: auto; }
+.map-legends { font-size: .7rem; margin-top: .5rem; }
+.map-probability-bar, .map-fraction-bar { height: .75rem; border: 1px solid #cad3cf; margin-top: .3rem; }
+.map-probability-bar { background: linear-gradient(to right, #f7faf9, #79c1a5, #004f40); }
+.map-fraction-bar { background: linear-gradient(to right, #faf9f7, #fde8ac, #f79448, #c13e20, #53151c); }
+.map-ticks { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.map-detail { font-size: .8rem; line-height: 1.4; margin: 1rem 0 0; min-height: 3.3rem; }
+@media (max-width: 600px) {
+  .validation-maps { padding: .5rem; }
+  .map-grid, .map-legends { gap: .4rem; }
+  .map-grid h4 { font-size: .65rem; min-height: 2rem; }
+  .map-legends { font-size: .55rem; }
+}

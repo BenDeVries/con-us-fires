@@ -1,0 +1,184 @@
+---
+title: "Forecasting County Burned Area"
+subtitle: "A short tutorial with XGBoostLSS and a graph-convolutional LSTM"
+author:
+  - name: "Ben DeVries"
+  - name: "Codex (OpenAI)"
+date: 2026-09-07
+---
+
+## The problem
+
+We want to predict a county's monthly **satellite-detected burned-area fraction**, up to
+twelve months ahead. The intended panel has 3,108 continental US counties and 264 months,
+January 2003 through December 2024. Detected burning includes prescribed and agricultural
+fire as well as wildfire, so this response should not be called wildfire risk.
+
+The response mixes exact zeros with positive fractions. We use a hurdle Beta model and
+compare two ways to estimate it: [gradient-boosted trees](xgboostlss.qmd) and a
+[graph-convolutional LSTM](pytorch.qmd). Both use information available at the forecast origin.
+
+The tutorial follows the modelling workflow: define the information available to a
+forecast, fit on train, tune on test, examine train/test residuals, then assess the chosen
+class representatives on validation.
+
+After the two model chapters, [Comparison](comparison.qmd) brings together the
+train/test evidence. [Discussion](discussion.qmd) then assesses the fixed fits on
+validation.
+
+## What a forecast may know {#sec-tracks}
+
+Let $y_{ct}$ be the detected burned fraction for county $c$ in month $t$. A forecast
+issued from origin $o$ predicts $y_{c,o+h}$ for horizons $h=1,\ldots,12$.
+
+Both models receive fixed terrain, calendar features, county geography, and historical
+burned fractions. Terrain is frozen from the first training month. Every response-history
+index is between zero and the origin. Annual land cover, population, built area, fuel
+cover, and target-month weather, drought, vegetation, and snow are excluded. The
+categorical land-cover input is also removed.
+
+These are **retrospective rolling-origin forecasts**: historical observations through the
+stated origin are assumed available. Later origins can use observations that occurred
+since earlier forecasts were made, including past observations from an earlier split.
+No response after the origin enters a forecast's inputs; training targets enter the
+fitting loss in the usual supervised-learning role. Operational product-release delays are not
+modelled here.
+
+The [data chapter](data.qmd) describes the checks behind this information set.
+
+## The hurdle Beta likelihood {#sec-likelihood}
+
+Write $\pi$ for the probability that the detected fraction is zero. Given a positive
+response, use a Beta distribution with mean $\mu$ and precision $\phi$:
+
+$$
+\Pr(Y=0)=\pi,\qquad
+Y\mid Y>0\sim\mathrm{Beta}(\alpha,\beta),\qquad
+\alpha=\mu\phi,\quad\beta=(1-\mu)\phi.
+$$ {#eq-meanprec}
+
+Here $0<\pi<1$, $0<\mu<1$, and $\phi>0$. The positive component has
+
+$$
+E[Y\mid Y>0]=\mu,\qquad
+\mathrm{Var}(Y\mid Y>0)=\frac{\mu(1-\mu)}{1+\phi}.
+$$
+
+The unconditional expected fraction combines occurrence and magnitude:
+
+$$
+E[Y]=(1-\pi)\mu.
+$$ {#eq-ey}
+
+The prediction files call $1-\pi$ `p_occ` and the product `e_y`.
+These are distinct summaries: a model can rank occurrence well while misestimating
+positive magnitudes. “Occurrence” here means positive satellite detection, not an
+independently verified physical ignition.
+
+The hurdle likelihood separates the zero mass from the continuous density:
+
+$$
+\log p(y)=
+\begin{cases}
+\log\pi,&y=0,\\
+\log(1-\pi)+\log f_{\mathrm{Beta}}(y;\mu\phi,(1-\mu)\phi),&0<y<1.
+\end{cases}
+$$ {#eq-loglik}
+
+The negative average of these contributions is **NLL**, the fitting and tuning objective.
+Lower is better. A density can exceed one, so a negative NLL is possible. Summing these
+marginal scores over correlated county-months does not make those observations independent.
+
+### Handling zero without moving positive observations
+
+The Beta density must not score the zero atom. Numerical evaluation also needs to keep
+the unused branch finite: passing zero to a logarithm can poison automatic differentiation
+even when the resulting branch is discarded.
+
+```python
+is_positive = y > 0
+y_for_beta = torch.where(is_positive, y, torch.full_like(y, 0.5))
+log_beta = torch.distributions.Beta(mu * phi, (1 - mu) * phi).log_prob(y_for_beta)
+log_prob = torch.where(
+    is_positive,
+    torch.nn.functional.logsigmoid(-zero_logit) + log_beta,
+    torch.nn.functional.logsigmoid(zero_logit),
+)
+loss = -log_prob.mean()
+```
+
+The dummy 0.5 affects only a discarded calculation for zero rows. Every positive response
+is scored at its observed value; it is not clamped upward to an epsilon. The maximum
+training-set burned fraction is **0.5641801116** (about **56.42%**), observed in
+Clark County, Kansas (FIPS 20025), in March 2017. It is well below one, so the
+training responses do not require a probability mass at that endpoint.
+
+## Fitting, tuning, and assessment {#sec-protocol}
+
+The repository's split names have the following roles:
+
+| Split | Assigned panel months | Use |
+|---|---|---|
+| Train | January 2003–May 2018 | Fit parameters and preprocessing; inspect residuals |
+| Test | June 2018–July 2020 | Tune hyperparameters and checkpoints; compare performance and residuals |
+| Validation | August 2020–December 2024 | Assess the two selected class representatives |
+
+The models share a 48-month lookback and twelve-month target horizon. A window belongs
+to a split only when its entire target horizon falls within that split. Training-history
+overlap across windows is permitted; assigning the same response target to different
+splits is not.
+
+The initial 48 months provide encoder/history warmup, so scored training targets
+begin in January 2007 rather than at the start of the training panel.
+
+Each class is tuned by minimizing the hurdle Beta NLL with the stated forecast inputs.
+The representative is the finite, completed trial with the lowest test NLL; pruned or failed
+trials cannot become the selected fit. Train/test diagnostics explain the strengths and
+limitations of that representative. Both model examples remain in the tutorial without
+requiring a definitive class winner.
+
+Validation is evaluated after the architecture, hyperparameters, and checkpoints are
+fixed. It assesses the selected representatives on a later target period.
+
+## Reading the scores and diagnostics
+
+NLL assesses the predicted zero mass and positive density. We also report the
+**continuous ranked probability score** (CRPS), which compares the predictive CDF $F$
+to the observation:
+
+$$
+\mathrm{CRPS}(F,y)=E|X-y|-\tfrac12E|X-X'|,\qquad X,X'\overset{\mathrm{iid}}{\sim}F.
+$$ {#eq-crps-kernel}
+
+For the hurdle Beta, this expectation has a closed form. Write $q=1-\pi$,
+$a=\mu\phi$, $b=(1-\mu)\phi$, let $B(a,b)$ be the Beta function, and let
+$I_y(a,b)$ be the regularized incomplete Beta function (the Beta CDF).
+For $0\leq y\leq1$,
+
+$$
+\begin{aligned}
+\mathrm{CRPS}(F,y)
+={}&\pi y+q\left[y\{2I_y(a,b)-1\}
+       +\mu\{1-2I_y(a+1,b)\}\right]\\
+ &-\pi q\mu
+ -\frac{2q^2}{a+b}\frac{B(2a,2b)}{B(a,b)^2}.
+\end{aligned}
+$$ {#eq-crps-hurdle-beta}
+
+The first line is $E|X-y|$. The second subtracts half the expected distance
+between two independent predictions, including the zero–positive pairs.
+The formula also applies at an observed zero, with $I_0(a,b)=0$; it needs
+neither simulated draws nor a displacement of the response.
+
+CRPS is in burned-fraction units, and lower is better. NLL and CRPS emphasize different
+properties, so a model can improve one more than the other. Occurrence AUC/AP, the Brier
+score, and errors in the expected fraction add interpretable views of performance.
+
+For the residual diagnostics, randomize the PIT within the CDF jump at zero and transform
+it to a normal quantile: $U\sim\mathrm{Uniform}(F(y^-),F(y))$ and $r=\Phi^{-1}(U)$.
+A correctly specified known marginal gives a marginal standard-normal residual.
+It does not create independence across counties, months, or repeated horizons.
+
+Use QQ plots, occurrence reliability, and temporal/spatial residual structure to see what
+a mean score hides. The plots are descriptive; millions of overlapping county-horizon rows
+are not millions of independent replications.

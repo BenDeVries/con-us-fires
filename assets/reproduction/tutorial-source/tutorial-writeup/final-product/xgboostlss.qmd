@@ -1,0 +1,141 @@
+---
+title: "XGBoostLSS"
+subtitle: "Forecasting a hurdle distribution with trees"
+author:
+  - name: "Ben DeVries"
+  - name: "Codex (OpenAI)"
+date: 2026-09-07
+---
+
+## Three outputs from gradient boosting {#sec-xgb-model}
+
+A forecast needs a probability of positive burned area and a model for its magnitude.
+XGBoostLSS [@maerz2022xgboostlss] connects the tree-building machinery of XGBoost to a
+distributional loss. Its name means *location, scale and shape*: the model learns a
+score for each parameter of the chosen distribution.
+
+Here three scores describe the [hurdle Beta](index.qmd#sec-likelihood). Two become the
+Beta concentrations, $\alpha>0$ and $\beta>0$; the third becomes the zero probability
+$\pi\in(0,1)$. The quantities we report are
+
+$$
+p_{\mathrm{occ}}=1-\pi,\qquad
+\mu=\frac{\alpha}{\alpha+\beta},\qquad
+\phi=\alpha+\beta,\qquad
+\widehat E[Y]=p_{\mathrm{occ}}\mu.
+$$
+
+$\mu$ describes the positive fraction; $\widehat E[Y]$ includes the chance of a zero.
+These answer different questions, especially in counties with infrequent detections.
+
+### How the loss grows trees
+
+At boosting round $r$, the model updates its three unconstrained scores:
+
+$$
+\boldsymbol\eta^{(r)}(x)
+=\boldsymbol\eta^{(r-1)}(x)+\nu\boldsymbol f^{(r)}(x).
+$$
+
+The learning rate $\nu$ scales the update. Gradients and Hessians of the negative
+log-likelihood determine the tree splits and leaf values. Separate trees update the
+three parameters; the implementation does not use cross-parameter Hessian blocks.
+Its L2 derivative stabilization rescales the parameter updates before tree fitting.
+
+Response functions keep the parameters inside their domains. The first concentration
+uses a softplus, the second a scaled sigmoid with a cap, and the gate a sigmoid.
+The concentration cap and maximum leaf update constrain numerical behavior. They are
+part of this implementation and belong in its recorded configuration.
+
+### Give exact zeros their own probability {#sec-xgb-hurdle}
+
+For a zero response, the likelihood contribution is $\pi$. For a positive response,
+it is $(1-\pi)\operatorname{Beta}(y;\alpha,\beta)$. Adding a density evaluated near
+zero to the gate would mix a probability mass and a continuous density.
+
+The custom distribution implements the two branches directly:
+
+~~~python
+def log_prob(self, value):
+    is_zero = value == 0
+    safe_value = torch.where(is_zero, torch.full_like(value, 0.5), value)
+    return torch.where(
+        is_zero,
+        torch.log(self.gate),
+        torch.log1p(-self.gate) + self.base_dist.log_prob(safe_value),
+    )
+~~~
+
+The dummy value $0.5$ prevents an unused $\log(0)$ calculation from producing
+invalid gradients. Positive observations retain their exact recorded values.
+The search and fit both use this likelihood.
+
+## One row for each county, origin, and horizon {#sec-xgb-horizon}
+
+This is a direct multi-horizon model. The lead time is a feature, so one
+booster learns the twelve forecasts issued at each origin. Each response window
+belongs wholly to train, test, or validation. The lookback is 48 months and the
+forecast horizon is 12 months.
+
+The inputs are deliberately compact:
+
+| Input | When it is known |
+|---|---|
+| Elevation, slope, sine and cosine of aspect | Fixed county terrain |
+| Target-month calendar harmonics and horizon | Known at issuance |
+| Burned fraction, occurrence, lags, rolling summaries | At or before the origin |
+| Neighbor summaries of burned-area history | At or before the origin |
+| Expanding county response summaries | Strictly before the origin |
+
+County adjacency supplies the geography for neighbor summaries. The land-cover
+category is held constant and carries no environmental information. No annual,
+epoch, or observed target-month environmental measurements enter this fit.
+The [data chapter](data.qmd) describes the retained response and its limitations.
+
+### Keep every history index inside the past
+
+A lagged response must satisfy $0\leq\text{index}\leq o$, where $o$ is the origin.
+The lower bound matters because a negative Python index wraps to the end of an array.
+The feature builder checks the available lookback against the largest requested lag.
+
+County means also need an origin boundary. A county's full-training response mean
+would contain outcomes that were still in the future at early training origins.
+These fits instead use the expanding mean and occurrence rate strictly before each
+origin. A later rolling forecast can use observations that have arrived since an
+earlier forecast, while the fitted booster stays fixed.
+
+## Fit on train, choose on test
+
+The search uses the test split to choose hyperparameters and boosting duration.
+Consequently its test score is a development score. The recorded search budget is
+limited, so the selected configuration is an example of this procedure, not an
+established optimum for the model class.
+
+The selected fit is then used unchanged to predict train, test, and validation.
+The saved configuration records the restricted forecast mode, feature names,
+lookback, horizon, links, and boosting settings. The results generator verifies
+forecast keys and targets against the canonical split files and recomputes its
+scores from the saved parameters.
+
+<!-- BEGIN FORECAST MODEL RESULTS -->
+The completed search contains 12 trials, of which 12 completed with finite test NLL. Trial 7 supplied the selected fit.
+
+The fit retains 482 boosting rounds, 2 spatial shell(s), 7 additional temporal lag(s), and 5 calendar harmonic pair(s).
+
+The [result manifest](assets/forecast/summary.json) records the complete configuration, selection evidence, and source hashes.
+<!-- END FORECAST MODEL RESULTS -->
+
+The [Comparison chapter](comparison.qmd) brings together both models' train/test
+scores, residual diagnostics, training G1 STACF heatmaps, and occurrence ROC and
+precision–recall curves. All scores are recomputed from saved parameters after
+checking complete forecast keys and outcomes. Validation results appear afterwards
+in [Discussion](discussion.qmd).
+
+## What these outputs establish
+
+The booster supplies a fitted hurdle distribution for each requested horizon.
+The positive mean, occurrence probability, and expected fraction are deterministic
+outputs of one fitted model. Scores describe those outputs on the recorded forecast
+requests; repeated horizons do not create independent observations.
+
+These separate marginals do not specify a joint multi-month trajectory.

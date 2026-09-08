@@ -1,0 +1,11 @@
+# Python 3.10; use a separate environment from requirements-report.txt.
+numpy==2.2.6
+pandas==2.2.3
+scipy==1.15.3
+scikit-learn==1.7.2
+xgboost==3.2.0
+xgboostlss==0.5.0
+torch==2.9.1
+optuna==4.9.0
+pyarrow==24.0.0
+tqdm==4.67.3

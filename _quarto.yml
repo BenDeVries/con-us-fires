@@ -1,0 +1,89 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - data.qmd
+    - xgboostlss.qmd
+    - pytorch.qmd
+    - comparison.qmd
+    - discussion.qmd
+  resources:
+    - assets/forecast/summary.json
+    - assets/forecast/train-test-diagnostics.png
+    - assets/forecast/validation-diagnostics.png
+    - assets/forecast/xgb-train-G1_stacf.png
+    - assets/forecast/gnn-train-G1_stacf.png
+    - assets/forecast/test-discrimination.png
+    - assets/forecast/validation-discrimination.png
+    - assets/forecast/validation-maps.js
+    - assets/forecast/maps/index.json
+    - assets/forecast/maps/counties.json
+    - assets/forecast/maps/horizon-*.bin
+    - assets/reproduction/manifest.json
+    - assets/reproduction/tutorial-source.zip
+    - assets/reproduction/xgb-predictions.zip
+    - assets/reproduction/gnn-predictions.zip
+
+website:
+  title: "Forecasting County Burned Area"
+  description: >
+    A short tutorial on leakage-safe monthly burned-area forecasting with
+    XGBoostLSS and a graph-convolutional LSTM.
+  site-url: https://bendevries.github.io/continental-us-counties-fire/
+  repo-url: https://github.com/BenDeVries/continental-us-counties-fire
+  page-navigation: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Problem
+      - href: data.qmd
+        text: Data
+      - text: Models
+        menu:
+          - href: xgboostlss.qmd
+            text: XGBoostLSS
+          - href: pytorch.qmd
+            text: PyTorch
+      - href: comparison.qmd
+        text: Comparison
+      - href: discussion.qmd
+        text: Discussion
+  sidebar:
+    style: docked
+    contents:
+      - index.qmd
+      - data.qmd
+      - section: "Model classes"
+        contents:
+          - xgboostlss.qmd
+          - pytorch.qmd
+      - comparison.qmd
+      - discussion.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    fig-width: 10
+    fig-height: 7
+    # Vector output is unaffordable here: the 36-facet small-multiples figure is
+    # roughly 20 MB as SVG.
+    fig-format: png
+    fig-dpi: 150
+    code-fold: true
+    code-summary: "Show code"
+    code-tools: true
+
+bibliography: references.bib
+
+# Publication stages only approved sources/resources through ../build_release.py.
+# This edition has plain code examples and no fitted-result execution or cache reuse.
+execute:
+  freeze: false
+  eval: false
+  warning: false
+  message: false

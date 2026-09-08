@@ -1,0 +1,30 @@
+{
+  "aspect_cos": {
+    "group": "terrain",
+    "source": "3DEP",
+    "cadence": "static",
+    "scaled": true,
+    "role": "predictor"
+  },
+  "aspect_sin": {
+    "group": "terrain",
+    "source": "3DEP",
+    "cadence": "static",
+    "scaled": true,
+    "role": "predictor"
+  },
+  "elev": {
+    "group": "terrain",
+    "source": "3DEP",
+    "cadence": "static",
+    "scaled": true,
+    "role": "predictor"
+  },
+  "slope": {
+    "group": "terrain",
+    "source": "3DEP",
+    "cadence": "static",
+    "scaled": true,
+    "role": "predictor"
+  }
+}

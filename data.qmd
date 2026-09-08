@@ -1,0 +1,127 @@
+---
+title: "Data and Forecast Inputs"
+subtitle: "Keep future information out of the feature matrix"
+author:
+  - name: "Ben DeVries"
+  - name: "Codex (OpenAI)"
+date: 2026-09-07
+---
+
+## The response and the panel
+
+Each row records satellite-detected burned area divided by county land area for one month.
+The MODIS MCD64A1 burned-area product detects managed burning as well as wildfire.
+The modelling domain is a fixed set of 3,108 counties over January 2003–December 2024:
+820,512 county-month rows.
+
+An observed zero and a missing observation are different. An absent annual export, a
+missing county-month key, or an invalid numerical target must fail preparation rather than
+become zero fire. The local input audit checks the 22 annual shards, the full unique key set,
+and agreement between the raw burned-area ratios and all three model splits.
+
+The response measures satellite detections. A recorded zero does not by itself
+establish complete satellite coverage or the absence of physical burning. The
+analysis does not impose a minimum mapped-area coverage threshold.
+
+In particular, `Uncertainty` describes burn-date uncertainty. Valid input coverage is
+encoded in QA bit 1, while bit 2 flags a shortened mapping period.
+[Official MCD64A1 documentation](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD64A1).
+
+## The feature set for this release
+
+The models use fixed geography, known calendar features, and observed response history.
+
+| Retained input | Construction |
+|---|---|
+| Elevation and slope | Fixed county terrain values |
+| Aspect sine and cosine | Fixed terrain orientation, avoiding the 0°/360° discontinuity |
+| Calendar harmonics | Known target month encoded by sine/cosine pairs |
+| Burned-area and occurrence history | Observations at or before the forecast origin |
+| County graph and identity | Fixed geography; neighbor histories or learned representations |
+| XGBoost county summaries | Expanding response means/rates using months strictly before origin |
+
+Terrain is frozen from the first training month and then reused. Its training-only
+normalization is checked against the raw panel. Later copies of terrain cannot change
+an earlier feature vector. The retained terrain values need no missing-value imputation.
+
+The models do not use population, built area, land-cover fractions or categories,
+fuel cover, target-month weather, drought, vegetation, or snow. For example, interpolating
+a 2016 population value between 2015 and 2020 would import a later source into an earlier
+row. Dropping the entire column removes that dependency.
+
+This compact information set supports forecasting from geography, season, and fire history.
+
+## Chronological windows
+
+The panel has three contiguous target periods:
+
+| Split | Months | Panel rows |
+|---|---|---:|
+| Train | January 2003–May 2018 | 574,980 |
+| Test | June 2018–July 2020 | 80,808 |
+| Validation | August 2020–December 2024 | 164,724 |
+
+For origin $o$, both models use a 48-month history ending at $o$ and predict the next
+twelve months. Assign a window only when all twelve target months belong to the same split.
+
+```python
+history = slice(origin - lookback + 1, origin + 1)
+targets = slice(origin + 1, origin + horizon + 1)
+
+assert origin - lookback + 1 >= 0
+assert origin + horizon < number_of_months
+assert all(target_split[t] == selected_split
+           for t in range(origin + 1, origin + horizon + 1))
+```
+
+A lag must satisfy both bounds, $0\le\text{history index}\le o$. Python's negative
+indices wrap to the end of an array, so an upper-bound check alone is insufficient.
+
+A later origin may use earlier observed responses from another split as history.
+For example, a validation-origin forecast can use already observed test-period burns.
+That is the intended rolling prediction policy, not permission to use outcomes after
+that forecast's origin. The entire validation period is not one forecast issued at
+its beginning.
+
+The evaluation assumes burned-area observations through the stated origin are available.
+
+## Training-derived summaries and preprocessing
+
+A county mean computed over the entire training period would expose early training rows
+to their own responses and to later training outcomes. XGBoost's expanding summary at
+origin $o$ is
+
+$$
+\bar y_{c,o}=\frac{1}{o}\sum_{t=0}^{o-1}y_{ct},
+$$
+
+with the occurrence rate constructed the same way. It is computed before the origin.
+Other explicit lags may use the observed response at $o$, but none uses a target at $o+h$.
+There is no climatology target-encoding feature in this experiment.
+
+The expanding summary uses all earlier recorded months, not only the 48-month sequence
+window. That is a different representation of past information from the GNN's finite
+encoder and learned county embedding; it does not introduce a future response.
+
+The shared preprocessing code permits only forward filling from earlier predictor
+observations and rejects unresolved leading gaps. It never backfills from test into
+train, or from validation into an earlier period. Missing targets cannot be imputed.
+
+Scalers are fitted on training data and applied unchanged to later splits.
+Annual land-cover categories cannot enter through a global vocabulary:
+the GNN omits that embedding, and the booster's remaining schema placeholder is constant.
+
+## What the leakage checks exercise
+
+Small adversarial tests alter future responses and excluded covariates, then verify that
+earlier feature vectors and predictions remain unchanged. Positive controls alter legal
+history and verify that the relevant inputs do change. Separate tests check window bounds,
+complete split-contained horizons, and the strictly past county summaries.
+
+The source audit also verifies that the stored targets match the raw exports, that retained
+terrain is constant apart from numerical reduction roundoff, and that its saved scaling
+uses only training moments. The fitted models, data files, code, and generated report
+are tied together by hashes.
+
+These checks address feature separation. They do not establish satellite observation
+completeness, performance in unseen counties, or real-time availability of every input.
