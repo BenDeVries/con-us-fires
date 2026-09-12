@@ -1,0 +1,30 @@
+---
+title: "Conditional predictions"
+subtitle: "Experiment design"
+---
+
+The conditional experiment predicts twelve monthly burned fractions given observed
+target-period environmental covariates and fire history available at each origin.
+Annual land-cover and interpolated population/built-area values are supplied
+retrospectively. This experiment does not forecast those covariates or estimate
+causal effects of changing them.
+
+Both model classes receive a fresh search. PCA retains 0–39 components from the
+39 dynamic predictors; 12 terrain, land-cover, and human predictors bypass PCA.
+Unreduced dynamic predictors are also eligible. Seasonal order ranges from 0 to 6.
+The neural encoder's lookback ranges from 12 to 48 months in three-month increments.
+Link functions remain fixed.
+
+Parameters fit on training data through May 2018. Test data through July 2020 select
+configurations and checkpoints by negative log likelihood. Both representatives
+are fixed before assessment on the later validation period, through December 2024.
+That period was examined in previous work and is not an untouched holdout.
+
+The initial configurations balance representations, harmonic orders, and model
+sizes. Every neural lookback appears at least twice. Searches and interrupted fits
+are resumable; a twelve-hour session can finish before the experiment is complete.
+
+Results will use the same matched-request scores, residual diagnostics, occurrence
+curves, training space-time autocorrelation, and validation maps as the forecast
+analysis. No fitted conditional results are presented until both representatives
+and their provenance have passed the experiment checks.

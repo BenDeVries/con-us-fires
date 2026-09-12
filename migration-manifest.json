@@ -1,0 +1,300 @@
+{
+  "source_repository": "/home/ben/continental-us-counties-fire",
+  "files": [
+    {
+      "source": "model/test_forecast_safe.py",
+      "destination": "model/test_forecast_safe.py",
+      "sha256": "2878ecaa3c178228c0514d7d2876cfdf306f8d769f7ced64bd4dee9f0dd392d5",
+      "bytes": 8355
+    },
+    {
+      "source": "model/ensemble.py",
+      "destination": "model/ensemble.py",
+      "sha256": "1a2a1bb4780c306c9c8aa4852830667d754a265ebb14021f1b7f266ca355bcf4",
+      "bytes": 9730
+    },
+    {
+      "source": "model/intervals.py",
+      "destination": "model/intervals.py",
+      "sha256": "1f91fee807b80eb0d8d8bd6e239603728f684de43104cbd3793e3ed388e842f9",
+      "bytes": 9556
+    },
+    {
+      "source": "model/__init__.py",
+      "destination": "model/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "model/param_ensemble.py",
+      "destination": "model/param_ensemble.py",
+      "sha256": "91ed5bb912bdd19028af5fae13026faecfb7375252159fa512a3f3d3f6c4e988",
+      "bytes": 9832
+    },
+    {
+      "source": "model/preprocessing.py",
+      "destination": "model/preprocessing.py",
+      "sha256": "e83c3f70b8ddbe397c979ad90314267507374a3e07ff6f09b22bf54451918ab7",
+      "bytes": 3222
+    },
+    {
+      "source": "model/freeze_forecast.py",
+      "destination": "model/freeze_forecast.py",
+      "sha256": "c839ba2c60dd9518a8f36059b29d67ab1112fac22559c49be1a72077140fb162",
+      "bytes": 4843
+    },
+    {
+      "source": "model/tune.py",
+      "destination": "model/tune.py",
+      "sha256": "94b682f209e80c3e2ec3317508f4048ce3b658b8fae8d00adeb922b07c6c8af0",
+      "bytes": 26133
+    },
+    {
+      "source": "model/train.py",
+      "destination": "model/train.py",
+      "sha256": "1b7055f1e8faa070b4fb6795564648a8fd15a321ef858ba4a9156365fa41b0e2",
+      "bytes": 18310
+    },
+    {
+      "source": "model/climatology.py",
+      "destination": "model/climatology.py",
+      "sha256": "5046a9de6da0a3b6578b12e3b76e28ed9e6fc538809f62a5f01b69afb1e0cbd4",
+      "bytes": 15770
+    },
+    {
+      "source": "model/parsimony.py",
+      "destination": "model/parsimony.py",
+      "sha256": "7777acc1ec59854555e49288ef97bac2a8ae02cf8ef094e623dd41982b8d821e",
+      "bytes": 11274
+    },
+    {
+      "source": "model/spatial.py",
+      "destination": "model/spatial.py",
+      "sha256": "01d72dedc484a5729997aaaa7bd9e8bd3bd2acdd18bd1b37bf15073dd3dca85e",
+      "bytes": 3089
+    },
+    {
+      "source": "model/predict.py",
+      "destination": "model/predict.py",
+      "sha256": "cd963a1be73961902127259f7619f09f7115389718850afe47117d807903480e",
+      "bytes": 7115
+    },
+    {
+      "source": "model/diagnostics.py",
+      "destination": "model/diagnostics.py",
+      "sha256": "42c69b94e3261954fdf606a4a25174fdc48963e81682e7ee96bc0a76baea6c4d",
+      "bytes": 54907
+    },
+    {
+      "source": "model/config.py",
+      "destination": "model/config.py",
+      "sha256": "ea622849b78538fde7f50cc96e56b389c9a19c91628038b0ce0df22d4b4f6f92",
+      "bytes": 4251
+    },
+    {
+      "source": "model/zib.py",
+      "destination": "model/zib.py",
+      "sha256": "4fcfe171d7fe37318af626b958ab7aac7d2b40d7d792bf0f438c751d1ab537fe",
+      "bytes": 7897
+    },
+    {
+      "source": "model/starima.py",
+      "destination": "model/starima.py",
+      "sha256": "d024c22c44855fd51700be39f4fca80484874645398d44a8cb22c1a209e35ac8",
+      "bytes": 24107
+    },
+    {
+      "source": "model/model.py",
+      "destination": "model/model.py",
+      "sha256": "e1f2bae5da44e5d274920d264beea01fff3783d57039bcb4bb716b022b725670",
+      "bytes": 12741
+    },
+    {
+      "source": "model/test_preprocessing.py",
+      "destination": "model/test_preprocessing.py",
+      "sha256": "80ba4176af81a14b32ee8406602f13d33be1d7a92ebb34039c34ac2f71fb6fb7",
+      "bytes": 4580
+    },
+    {
+      "source": "model/data.py",
+      "destination": "model/data.py",
+      "sha256": "a8f0bcb9806ba9cbec36f57a9bf7e73c6d7206ec86a91b1e0af8ea4a36bc99b9",
+      "bytes": 19840
+    },
+    {
+      "source": "model/xgb/test_forecast_safe.py",
+      "destination": "model/xgb/test_forecast_safe.py",
+      "sha256": "82eeadaa0433fb83d8b79dc3a6fd51f10d5e5a0637684430b97e82d4deedad8f",
+      "bytes": 6423
+    },
+    {
+      "source": "model/xgb/seed_ensemble.py",
+      "destination": "model/xgb/seed_ensemble.py",
+      "sha256": "54a32b47ab6a9d0ff978e962adb0ea3e7cc250e1f7ba837f606743ede5aecfbd",
+      "bytes": 7030
+    },
+    {
+      "source": "model/xgb/__init__.py",
+      "destination": "model/xgb/__init__.py",
+      "sha256": "a379ce2032e038ce9358adab74d0ec082f5ee5938ab9c8913b0cea4a7bda34af",
+      "bytes": 494
+    },
+    {
+      "source": "model/xgb/importance.py",
+      "destination": "model/xgb/importance.py",
+      "sha256": "3ff306deef06535d207e8936a63e4fb03ce514e3c548f1643fb7fc685dfa32cd",
+      "bytes": 10798
+    },
+    {
+      "source": "model/xgb/common.py",
+      "destination": "model/xgb/common.py",
+      "sha256": "f1a1ab2284ca53a4ac48bd1a076d286add12cd69b78afe5aedc32f5038e21127",
+      "bytes": 1428
+    },
+    {
+      "source": "model/xgb/tune.py",
+      "destination": "model/xgb/tune.py",
+      "sha256": "cfef4ab9eeecffdad253e49b1a5f55f9dc1146edc2c5dadd87c19262b840c153",
+      "bytes": 21694
+    },
+    {
+      "source": "model/xgb/train.py",
+      "destination": "model/xgb/train.py",
+      "sha256": "cd8601738f6fd010e9e91484f41207a62ef0d546148bc80086e1753669134957",
+      "bytes": 14334
+    },
+    {
+      "source": "model/xgb/bootstrap.py",
+      "destination": "model/xgb/bootstrap.py",
+      "sha256": "c202023c1ce85ccc004d19f26461c30e8409012573069aa3c0aa171165c8d6ce",
+      "bytes": 8132
+    },
+    {
+      "source": "model/xgb/zabeta_hurdle.py",
+      "destination": "model/xgb/zabeta_hurdle.py",
+      "sha256": "eea9030e3707d5b854d8c54142d1917dd19d6ed0b58883212640bdf58718872f",
+      "bytes": 6281
+    },
+    {
+      "source": "model/xgb/test_lag_anchoring.py",
+      "destination": "model/xgb/test_lag_anchoring.py",
+      "sha256": "f892fff231e102fb32c7fcb74780913323f168b12f7dd883355a1a6a2896d50c",
+      "bytes": 4028
+    },
+    {
+      "source": "model/xgb/predict.py",
+      "destination": "model/xgb/predict.py",
+      "sha256": "47789fb8ae5b3bbb3b94fae5edb117168b0d6411da7e9fb682f2bd82822359d5",
+      "bytes": 3078
+    },
+    {
+      "source": "model/xgb/features.py",
+      "destination": "model/xgb/features.py",
+      "sha256": "ed6e88af906516eaeed4b249b17f10c199e123b9ac17c67ddbdbb5dadc6d7bed",
+      "bytes": 27479
+    },
+    {
+      "source": "model/xgb/select_reduction.py",
+      "destination": "model/xgb/select_reduction.py",
+      "sha256": "b57613e466ec528b762f36c4429cde1e6c40d73f88b3e869d181cc4f231404d5",
+      "bytes": 10847
+    },
+    {
+      "source": "model/xgb/reduction.py",
+      "destination": "model/xgb/reduction.py",
+      "sha256": "e03624a2254baf1228976a1b1969ffd5f163faba49c62008c07f7bba83dabfdf",
+      "bytes": 11297
+    },
+    {
+      "source": "calibration.py",
+      "destination": "calibration.py",
+      "sha256": "1747d65737a3ce9779fb6e77ff826066263862eb2ab8da57202f8c03fc4d5a69",
+      "bytes": 11522
+    },
+    {
+      "source": "output/data/train.parquet",
+      "destination": "output/data/train.parquet",
+      "sha256": "f4222798405354f830979ca879f4f8b1ca1040d37900976285bbf5eb4b519fed",
+      "bytes": 181735057
+    },
+    {
+      "source": "output/data/test.parquet",
+      "destination": "output/data/test.parquet",
+      "sha256": "4da517fed13390baed992fd18f6562fa7cd2155be1a822ddabb04b952f82c028",
+      "bytes": 30439095
+    },
+    {
+      "source": "output/data/validation.parquet",
+      "destination": "output/data/validation.parquet",
+      "sha256": "89b3159e78a5c1c76fed2f0f959d5e772f1b796e7bac16c5d15bb2a2660fcd6f",
+      "bytes": 60178963
+    },
+    {
+      "source": "output/data/feature_metadata.json",
+      "destination": "output/data/feature_metadata.json",
+      "sha256": "888a7d46451c8306bdd2a4cf8d54fc4cc80d541aab88b7de36d356b26895e6e4",
+      "bytes": 7243
+    },
+    {
+      "source": "output/data/feature_scaler.json",
+      "destination": "output/data/feature_scaler.json",
+      "sha256": "9ff546b18092d5f64ec3198e14ad0fbdb795cdc1692f2b54435205dd34660338",
+      "bytes": 4259
+    },
+    {
+      "source": "output/data/county_graph.npz",
+      "destination": "output/data/county_graph.npz",
+      "sha256": "27e3d23f8407a2ed1e99265b5b043bce6a0d5fdfc52db15189816de4b59cac83",
+      "bytes": 295442
+    },
+    {
+      "source": "output/data/node_index.json",
+      "destination": "output/data/node_index.json",
+      "sha256": "3a8c7749b5950f0796150ee704ebc3d2fd330b8c496984216f4ccd0ef2f8effa",
+      "bytes": 45510
+    },
+    {
+      "source": "output/data/county_geom.parquet",
+      "destination": "output/data/county_geom.parquet",
+      "sha256": "1545ab079132a2063a20c557c2ea63cf852af22202669525f8daf10a356777b1",
+      "bytes": 120597440
+    },
+    {
+      "source": "tutorial-writeup/workspace/prepare_forecast_results.py",
+      "destination": "reporting/prepare_forecast_results.py",
+      "sha256": "c7d32516c0a7059dcf422f5f8a3fc74e55e28a00b3e30716953d1452303ce877",
+      "bytes": 56975
+    },
+    {
+      "source": "tutorial-writeup/workspace/prepare_validation_maps.py",
+      "destination": "reporting/prepare_validation_maps.py",
+      "sha256": "474fc9b31e2005dae139dbcf004090119947847e01cb054e5833c377f56a265f",
+      "bytes": 6304
+    },
+    {
+      "source": "tutorial-writeup/workspace/test_forecast_report_diagnostics.py",
+      "destination": "reporting/test_forecast_report_diagnostics.py",
+      "sha256": "81626ea16996de21cebc19f9a8f861f26f34807ef1509968988ffb08f44f1f24",
+      "bytes": 13595
+    },
+    {
+      "source": "step10_join.py",
+      "destination": "step10_join.py",
+      "sha256": "36c19238619b8eff5dfc84502f8553ed5a57f5e32e21f1c302dd63f459d5ea6b",
+      "bytes": 5324
+    },
+    {
+      "source": "step11_impute_split_scale.py",
+      "destination": "step11_impute_split_scale.py",
+      "sha256": "13ff445ddc2897657526151dc4197eae1822f7fa06033eed9e57e6b4ef90f2b2",
+      "bytes": 5795
+    },
+    {
+      "source": "config.py",
+      "destination": "config.py",
+      "sha256": "9dd3cd7a5385075bb6b590b7f4cbd14d24969e35d7f1ecda2419fc601b5679b0",
+      "bytes": 2971
+    }
+  ],
+  "hash_convention": "sha256 records imported source bytes before local adaptations; each experiment records current code hashes."
+}

@@ -1,0 +1,12 @@
+# Python 3.11; exact original fitting environment. CUDA nightly wheel required.
+--extra-index-url https://download.pytorch.org/whl/nightly/cu128
+numpy==2.4.6
+pandas==3.0.3
+scipy==1.17.1
+torch==2.12.0.dev20260408+cu128
+optuna==4.9.0
+pyarrow==24.0.0
+scikit-learn==1.9.0
+matplotlib==3.11.0
+threadpoolctl==3.6.0
+tqdm==4.68.3

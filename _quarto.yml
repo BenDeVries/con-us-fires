@@ -8,7 +8,9 @@ project:
     - pytorch.qmd
     - comparison.qmd
     - discussion.qmd
+    - conditional.qmd
   resources:
+    - assets/conditional/**
     - assets/forecast/summary.json
     - assets/forecast/train-test-diagnostics.png
     - assets/forecast/validation-diagnostics.png
@@ -49,6 +51,8 @@ website:
         text: Comparison
       - href: discussion.qmd
         text: Discussion
+      - href: conditional.qmd
+        text: Conditional
   sidebar:
     style: docked
     contents:
@@ -60,6 +64,7 @@ website:
           - pytorch.qmd
       - comparison.qmd
       - discussion.qmd
+      - conditional.qmd
 
 format:
   html:
